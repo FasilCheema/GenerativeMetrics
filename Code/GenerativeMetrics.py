@@ -12,8 +12,8 @@ import sklearn.cluster
 from math import cos,sin,radians
 
 def ComputePR(P,Q,k):
-    epsilon = 0.01
-    num_angles = 100
+    epsilon = 1e-10
+    num_angles = 10001
     
     cluster_data = np.vstack([P,Q])
     kmeans = sklearn.cluster.MiniBatchKMeans(n_clusters=k,n_init=10)
