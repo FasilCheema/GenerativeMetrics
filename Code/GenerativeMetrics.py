@@ -203,6 +203,9 @@ def TestDataGenerator():
 
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
+def PlotPR(precision, recall):
+    plt.plot(precision,recall)
+
 
 def UnitTest2():
 
