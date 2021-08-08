@@ -13,7 +13,7 @@ from math import cos,sin,radians
 
 def ComputePR(P,Q,k):
     epsilon = 1e-10
-    num_angles = 10001
+    num_angles = 1001
     
     cluster_data = np.vstack([P,Q])
     kmeans = sklearn.cluster.MiniBatchKMeans(n_clusters=k,n_init=10)
@@ -53,6 +53,9 @@ def ComputePR(P,Q,k):
     
     return precision, recall
 
+def PRCover(P,Q,k):
+
+    print('null')
 
 
 def IPR_Indicator_Function(sample_pt, sample_set,k_nn_set):
@@ -204,7 +207,7 @@ def TestDataGenerator():
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
 def PlotPR(precision, recall):
-    plt.plot(precision,recall)
+    plt.plot(recall,precision) 
 
 
 def UnitTest2():
