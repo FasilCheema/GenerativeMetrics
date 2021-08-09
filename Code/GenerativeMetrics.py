@@ -207,6 +207,11 @@ def TestDataGenerator():
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
 def PlotPR(precision, recall):
+
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.set(xlim=(0,1), ylim=(0,1))
+    ax.fill_between(recall, 0, precision)
+
     plt.plot(recall,precision) 
 
 
