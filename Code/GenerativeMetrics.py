@@ -4,12 +4,15 @@
 '''
 
 import numpy as np
+from pandas.core.indexing import convert_from_missing_indexer_tuple
 from scipy.stats import norm 
 import matplotlib.pyplot as plt
 import sklearn
 from sklearn.neighbors import NearestNeighbors
 import sklearn.cluster 
 from math import cos,sin,radians
+
+from sklearn.utils.extmath import density
 
 def ComputePR(P,Q,k):
     epsilon = 1e-10
@@ -206,14 +209,19 @@ def TestDataGenerator():
 
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
-def PlotPR(precision, recall):
+def PlotResults(precision, recall, I_precision, I_recall, density, coverage):
 
     fig, ax = plt.subplots(figsize=(10,10))
     ax.set(xlim=(0,1), ylim=(0,1))
-    ax.fill_between(recall, 0, precision)
+    ax.fill_between(recall, 0, precision, color='green')
+    ax.set_title("Precision and Recall")
+    ax.set_xlabel(r'Recall $ \beta $')
+    ax.set_ylabel(r'Precision $ \alpha $')
 
-    plt.plot(recall,precision) 
+    ax.text(0.65, 1.1, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
+    ax.text(0.65, 1.05, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
 
+    plt.show()
 
 def UnitTest2():
 
@@ -248,6 +256,26 @@ def UnitTest3():
     p5,r5 = ComputeIPR(true_data,gen5_data,7)
     print('Fifth PR score: ')
     print(p5, ' ', r5)
+
+def UnitTest4():
+    #Recreate figure 3e in paper by sajjadi et al 2018
+    temp1 = np.ones((10,1))
+    temp2 = np.ones((10,1))
+    temp1 += 1 
+    P3 = np.vstack([temp1,temp2])
+
+    temp1 = np.ones((1,1))
+    temp1 *= 2
+    temp2 = np.ones((19,1))
+    Q3 = np.vstack([temp1,temp2])
+
+    k = 2
+
+    precision, recall = ComputePR(P3, Q3, 20)
+    density, coverage = ComputeDC(P3,Q3,k)
+    I_precision, I_recall = ComputeIPR(P3,Q3,k)
+    PlotResults(precision, recall, I_precision, I_recall, density, coverage)
+
 
 if __name__ == "__main__":
     true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data = TestDataGenerator()
