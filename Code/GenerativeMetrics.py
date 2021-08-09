@@ -15,6 +15,8 @@ from math import cos,sin,radians
 from sklearn.utils.extmath import density
 
 def ComputePR(P,Q,k):
+    #Function to compute precision, and recall as in Sajjadi et al 2018 
+    # (Code is heavily recycled from there)
     epsilon = 1e-10
     num_angles = 1001
     
@@ -80,9 +82,11 @@ def IPR_Indicator_Function(sample_pt, sample_set,k_nn_set):
     return val 
 
 def ComputeIPR(P,Q,k):
+    #Computes improved precision and recall as in the 2019 paper. 
     nbrs_P = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(P)
     nbrs_Q = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(Q)
 
+    #returns KNN distances and indices for each data sample
     dist_P, ind_P = nbrs_P.kneighbors(P)
     dist_Q, ind_Q = nbrs_Q.kneighbors(Q)
 
@@ -119,6 +123,14 @@ def ComputeIPR(P,Q,k):
 
 
 def ComputeDC(P,Q,k):
+    #Computes density and coverage as in Naeem et al 2020
+    '''
+    Note: that normally knn computation always includes 1-NN as the point itself. As this 
+    leads to the first column of the distance matrix to always be 0 and the first column 
+    of the index matrix to always be the row number in this function we discard the first 
+    column for both matrices and thus whenever k is mentioned we are actually referring to 
+    k-1. So if we input k =2 we are actually finding the 1-NN not including a point to itself
+    '''
     nbrs_P = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(P)
     nbrs_Q = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(Q)
 
@@ -139,10 +151,12 @@ def ComputeDC(P,Q,k):
     d_sum = 0
     c_sum = 0
 
+    #Iterates through each generated sample and checks within how many real samples it lies  
     for i in range(N):
         for j in range(M):
             curr_dist = np.linalg.norm((Q[j]-P[i]))
 
+            #checks if distance is within the k-nn distance
             if curr_dist <= dist_P[i][k-2]:
                 d_sum += 1
 
@@ -151,6 +165,7 @@ def ComputeDC(P,Q,k):
         for j in range(M):
             curr_dist = np.linalg.norm((Q[j]-P[i]))
 
+            #checks if distance is within the k-nn distance
             if curr_dist <= dist_P[i][k-2]:
                 c_sum += 1
                 break
@@ -160,6 +175,26 @@ def ComputeDC(P,Q,k):
     coverage = c_sum/N 
 
     return density, coverage
+
+def PlotData(P,Q):
+    dim_P = P.shape[1]
+    dim_Q = Q.shape[1]
+
+    fig, ax = plt.subplots(figsize=(10,10))
+
+    if (dim_P == 1) and (dim_Q == 1):
+        ax.set_xlabel('value')
+        ax.set_ylabel('frequency')
+        ax.set_title('Histogram of P (true data) and Q (gen data)')
+
+        ax.hist(P, bins = 'auto', color='blue', alpha=0.5 )
+        ax.hist(Q, bins = 'auto', color='red' , alpha=0.5)
+
+        plt.show()
+    else:
+        print(' ')
+
+
 
 def TestDataGenerator():
     x_vals = [-1,-1,-1,0,0,0,1,1,1]
