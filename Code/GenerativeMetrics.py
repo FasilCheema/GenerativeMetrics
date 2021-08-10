@@ -180,19 +180,49 @@ def PlotData(P,Q):
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
 
-    fig, ax = plt.subplots(figsize=(10,10))
+    
 
     if (dim_P == 1) and (dim_Q == 1):
+        fig, ax = plt.subplots(figsize=(10,10))
         ax.set_xlabel('value')
         ax.set_ylabel('frequency')
         ax.set_title('Histogram of P (true data) and Q (gen data)')
 
-        ax.hist(P, bins = 'auto', color='blue', alpha=0.5 )
-        ax.hist(Q, bins = 'auto', color='red' , alpha=0.5)
+        ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label='P True distribution')
+        ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
+        ax.legend(['True distribution P','Generated distribution Q'])
+        handles = [Rectangle((0,0),1,1,color=c,ec="k") for c in [P,Q]]
+        labels= ["P", "Q"]
+        plt.legend()
 
         plt.show()
     else:
         print(' ')
+        #Code to do 3d histograms
+        fig = plt.figure()
+        ax  = fig.add_subplot(111, projection='3d')
+
+        hist, bins = np.histogram(P, bins='auto')
+        xs = (bins[:-1] + bins[1:])/2
+        ax.bar(xs, hist, zs = 0, alpha=0.8, color='blue')
+
+        hist, bins = np.histogram(Q, bins='auto')
+        xs = (bins[:-1] + bins[1:])/2
+        ax.bar(xs, hist, zs =  10, alpha=0.8, color ='red')
+
+def Experiments():
+# Set of experiments to be conducted
+    r_seed = 7
+    num_vals = 100
+    init_val = 0
+    end_val  = 5
+
+    np.random.seed(r_seed)
+    np.random.rand((num_vals,1))
+
+    np.random.uniform([0,10,7])
+
+
 
 
 
