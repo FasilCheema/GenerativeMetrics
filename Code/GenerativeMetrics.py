@@ -176,38 +176,53 @@ def ComputeDC(P,Q,k):
 
     return density, coverage
 
-def PlotData(P,Q):
+def PlotData(P,Q, plotstyle = '1d'):
     #Takes the samples and plots them depending on the dimensionality
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
 
     
-
     if (dim_P == 1) and (dim_Q == 1):
-        fig, ax = plt.subplots(figsize=(10,10))
-        ax.set_xlabel('value')
-        ax.set_ylabel('frequency')
-        ax.set_title('Histogram of P (true data) and Q (gen data)')
 
-        ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label='P True distribution')
-        ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
-        ax.legend(['True distribution P','Generated distribution Q'])
-        plt.legend()
+        if plotstyle != '3d':
+            fig, ax = plt.subplots(figsize=(10,10))
+            ax.set_xlabel('value')
+            ax.set_ylabel('frequency')
+            ax.set_title('Histogram of P (true data) and Q (gen data)')
 
-        plt.show()
+            ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label='P True distribution')
+            ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
+            ax.legend(['True distribution P','Generated distribution Q'])
+            plt.legend()
+
+            plt.show()
+        else:
+            #Code to do 3d histograms
+            fig = plt.figure()
+            ax  = fig.add_subplot(111, projection='3d')
+
+            hist, bins = np.histogram(P, bins='auto')
+            xs = (bins[:-1] + bins[1:])/2
+            ax.bar(xs, hist, zs = 0, alpha=0.8, color='blue')
+
+            hist, bins = np.histogram(Q, bins='auto')
+            xs = (bins[:-1] + bins[1:])/2
+            ax.bar(xs, hist, zs =  10, alpha=0.8, color ='red')
     else:
-        print(' ')
-        #Code to do 3d histograms
-        fig = plt.figure()
-        ax  = fig.add_subplot(111, projection='3d')
+        # assumes 2d plots
+        P_x = P[:,0]
+        P_y = P[:,1]
+        Q_x = Q[:,0]
+        Q_y = Q[:,1]
 
-        hist, bins = np.histogram(P, bins='auto')
-        xs = (bins[:-1] + bins[1:])/2
-        ax.bar(xs, hist, zs = 0, alpha=0.8, color='blue')
-
-        hist, bins = np.histogram(Q, bins='auto')
-        xs = (bins[:-1] + bins[1:])/2
-        ax.bar(xs, hist, zs =  10, alpha=0.8, color ='red')
+        fig, ax = plt.subplots()
+        ax.scatter(P_x,P_y, color = 'blue')
+        ax.scatter(Q_x,Q_y, color = 'red')
+        ax.legend(['True Distribution P', 'Gen Distribution Q'])
+        ax.set_title('Plotting 2d experiment of generated and real distributions')
+        ax.set_ylabel('y axis')
+        ax.set_xlabel('x axis')
+        plt.show()
 
 def UniformData1D(n,m,a_P,b_P,a_Q,b_Q,r_seed):
     '''
@@ -256,9 +271,9 @@ def Gaussian2D(n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q, r_seed):
 def Experiments():
 # Set of experiments to be conducted
     r_seed = 7
-    num_vals = 100
+    num_vals = 1000
     init_val = 0
-    end_val  = 5
+    
 
     np.random.seed(r_seed)
 
