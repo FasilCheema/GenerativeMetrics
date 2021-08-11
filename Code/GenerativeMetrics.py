@@ -177,6 +177,7 @@ def ComputeDC(P,Q,k):
     return density, coverage
 
 def PlotData(P,Q):
+    #Takes the samples and plots them depending on the dimensionality
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
 
@@ -191,8 +192,6 @@ def PlotData(P,Q):
         ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label='P True distribution')
         ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
         ax.legend(['True distribution P','Generated distribution Q'])
-        handles = [Rectangle((0,0),1,1,color=c,ec="k") for c in [P,Q]]
-        labels= ["P", "Q"]
         plt.legend()
 
         plt.show()
@@ -210,6 +209,50 @@ def PlotData(P,Q):
         xs = (bins[:-1] + bins[1:])/2
         ax.bar(xs, hist, zs =  10, alpha=0.8, color ='red')
 
+def UniformData1D(n,m,a_P,b_P,a_Q,b_Q,r_seed):
+    '''
+    Takes in parameters m: num gen samples, n: num real samples, a_P: start of uniform dist for P, b_P: 
+    end of uniform dist for P, (a_Q and b_Q start end pts for Q) and a random seed value to generate 
+    2 sets of samples P and Q for real and gen distributions respectively.
+    '''
+    np.random.seed(r_seed)
+
+    P = np.random.uniform(a_P, b_P, (n,1))
+    Q = np.random.uniform(a_Q, b_Q, (m,1))
+
+    return P, Q 
+    
+def UniformData2D(n, m, x1_P, x2_P, y1_P, y2_P, x1_Q, x2_Q, y1_Q, y2_Q, r_seed):
+    '''
+    Takes values of endpoints to define 2 rectangles (for P and Q) a uniform distribution is then sampled
+    over the defined rectangular. Also takes how many number of samples there are for each sample set.
+    '''
+    np.random.seed(r_seed)
+
+    P_x = np.random.uniform(x1_P, x2_P, (n,1))
+    P_y = np.random.uniform(y1_P, y2_P, (n,1))
+
+    Q_x = np.random.uniform(x1_Q, x2_Q, (m,1))
+    Q_y = np.random.uniform(y1_Q, y2_Q, (m,1))
+
+    P = np.hstack([P_x, P_y])
+    Q = np.hstack([Q_x, Q_y])
+
+    return P, Q
+
+def Gaussian2D(n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q, r_seed):
+    '''
+    takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
+    and returns a 2d normal distribution in particular the x and y coord of the true and gen dist.
+    '''
+
+    np.random.seed(r_seed)
+
+    P = np.random.multivariate_normal(np.array([x_P,y_P]),np.array([[std_P,0],[0, std_P]]),(n))
+    Q = np.random.multivariate_normal(np.array([x_Q,y_Q]),np.array([[std_Q,0],[0, std_Q]]),(m))
+
+    return P, Q
+
 def Experiments():
 # Set of experiments to be conducted
     r_seed = 7
@@ -218,12 +261,10 @@ def Experiments():
     end_val  = 5
 
     np.random.seed(r_seed)
-    np.random.rand((num_vals,1))
 
-    np.random.uniform([0,10,7])
+    P = np.random.uniform(init_val, end_val, (num_vals,1))
 
-
-
+    return P
 
 
 def TestDataGenerator():
