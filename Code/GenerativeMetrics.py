@@ -60,10 +60,62 @@ def ComputePR(P,Q,k):
 
 def PRCover(P,Q,k):
 
-    print('null')
+    num_P = P.shape[0]
+    num_Q = Q.shape[0]
+    
+    nbrs_P = NearestNeighbors(n_neighbors=(3*k), algorithm='kd_tree').fit(P)
+    nbrs_Q = NearestNeighbors(n_neighbors=(3*k), algorithm='kd_tree').fit(Q)
+
+    #returns KNN distances and indices for each data sample
+    dist_P, ind_P = nbrs_P.kneighbors(P)
+    dist_Q, ind_Q = nbrs_Q.kneighbors(Q)
+
+    #Note that the knn returns the pt itself as 1NN so we discard first column
+    dist_P = dist_P[:,1:]
+    dist_Q = dist_Q[:,1:]
+    ind_P  =  ind_P[:,1:]
+    ind_Q  =  ind_Q[:,1:]
+
+    p_sum = 0
+    r_sum = 0
+
+    for i in range(num_P):
+        if PR_Cover_Indicator(P[i],Q,dist_P) == 1:
+            p_sum += 1
 
 
-def IPR_Indicator_Function(sample_pt, sample_set,k_nn_set):
+    for j in range(num_Q): 
+        if PR_Cover_Indicator(Q[i],P,dist_Q) == 1:
+            r_sum += 1
+
+    cover_precision = p_sum/num_P
+    cover_recall    = r_sum/num_Q
+
+    return cover_precision, cover_recall
+
+def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set):
+    
+    k = k_nn_set.shape[1] + 1
+    num_nbrs = k/3
+    num_pts  = sample_set.shape[0]
+
+    set_pts_in_knn = 0 
+    
+    for i in range(num_pts):
+        curr_dist = np.linalg.norm(sample_set[i] - sample_pt)
+        
+        if curr_dist <= k_nn_set[i][k-2]:
+            set_pts_in_knn += 1
+    
+    if set_pts_in_knn >= num_nbrs:
+        indicator_val = 1
+    else:
+        indicator_val = 0
+
+    return indicator_val
+
+
+def IPR_Indicator_Function(sample_pt, sample_set, k_nn_set):
     #Checks to see if the pt passed into this function lies within the knn sphere of any point in the set passed into the function  
 
     k = k_nn_set.shape[1]    
@@ -274,12 +326,12 @@ def Experiments():
     num_vals = 1000
     init_val = 0
     
+    #1D point generator 
+    #case 1, matching 1D dist
+    P1,Q1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
+    PlotData(P1,Q1,plotstyle='3d')
 
-    np.random.seed(r_seed)
 
-    P = np.random.uniform(init_val, end_val, (num_vals,1))
-
-    return P
 
 
 def TestDataGenerator():
