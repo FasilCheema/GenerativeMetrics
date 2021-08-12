@@ -327,9 +327,29 @@ def Experiments():
     init_val = 0
     
     #1D point generator 
+    
     #case 1, matching 1D dist
+    k1 = 3
     P1,Q1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
-    PlotData(P1,Q1,plotstyle='3d')
+    PlotData(P1,Q1)
+    c1_precision, c1_recall = PRCover(P1,Q1,k1)
+    density1, coverage1 = ComputeDC(P1,Q1,k1)
+    p1, r1 = ComputePR(P1,Q1,k1)
+    Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall)
+
+    #case 2, disjoint 1D dist
+    k2 = 3
+    P2,Q2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
+    PlotData(P2,Q2)
+    c2_precision, c2_recall = PRCover(P2,Q2,k2)
+    density2, coverage2 = ComputeDC(P2,Q2,k2)
+    p2, r2 = ComputePR(P2,Q2,k2)
+    Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
+    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall)
+
+
+
 
 
 
@@ -382,7 +402,7 @@ def TestDataGenerator():
 
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
-def PlotResults(precision, recall, I_precision, I_recall, density, coverage):
+def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall):
 
     fig, ax = plt.subplots(figsize=(10,10))
     ax.set(xlim=(0,1), ylim=(0,1))
@@ -391,8 +411,9 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage):
     ax.set_xlabel(r'Recall $ \beta $')
     ax.set_ylabel(r'Precision $ \alpha $')
 
-    ax.text(0.65, 1.1, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
-    ax.text(0.65, 1.05, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
+    ax.text(0.65, 1.07, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
+    ax.text(0.65, 1.02, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
+    ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
 
     plt.show()
 
