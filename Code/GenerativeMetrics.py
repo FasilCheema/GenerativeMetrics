@@ -238,8 +238,8 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
 
         if plotstyle != '3d':
             #fig, ax = plt.subplots(figsize=(10,10))
-            fig = plt.figure()
-            ax = fig.add_subplot(figsize=(10,10))
+            fig = plt.figure(figsize=(10,10))
+            ax = fig.add_subplot()
             ax.set_xlabel('value')
             ax.set_ylabel('frequency')
             ax.set_title('Histogram of P (true data) and Q (gen data)')
@@ -251,7 +251,7 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
 
             #Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
-                fig.savefig("Experiments/experiment%d.png"%(fig_num))
+                fig.savefig("Experiments/InputData%d.png"%(fig_num))
 
             plt.show()
         else:
@@ -269,7 +269,7 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
             
             #Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
-                fig.savefig("Experiments/experiment%d.png"%(fig_num))
+                fig.savefig("Experiments/InputData%d.png"%(fig_num))
     else:
         # assumes 2d plots
         P_x = P[:,0]
@@ -287,7 +287,7 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
         
         #Saves an image of the plot in the appropriate directory with appropriate naming.
         if save_fig == 'on':
-                fig.savefig("Experiments/experiment%d.png"%(fig_num))
+                fig.savefig("Experiments/InputData%d.png"%(fig_num))
         
         plt.show()
 
@@ -338,59 +338,109 @@ def Gaussian2D(n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q, r_seed):
 def Experiments():
 # Set of experiments to be conducted
     r_seed = 7
-    num_vals = 1000
-    init_val = 0
     k = 3
     
     #1D point generator 
-    
+    #************************ 
+     
     #case 1, matching 1D dist
     k1 = k
+    fig_num = 1
     P1,Q1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
-    PlotData(P1,Q1)
+    PlotData(P1,Q1,fig_num, plotstyle='1d',save_fig = 'on')
     c1_precision, c1_recall = PRCover(P1,Q1,k1)
     density1, coverage1 = ComputeDC(P1,Q1,k1)
     p1, r1 = ComputePR(P1,Q1,k1)
     Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
 
     #case 2, disjoint 1D dist
     k2 = k
+    fig_num = 2
     P2,Q2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
-    PlotData(P2,Q2)
+    PlotData(P2,Q2,fig_num,plotstyle='1d',save_fig='on')
     c2_precision, c2_recall = PRCover(P2,Q2,k2)
     density2, coverage2 = ComputeDC(P2,Q2,k2)
     p2, r2 = ComputePR(P2,Q2,k2)
     Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
-    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall)
+    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall,fig_num,save_fig='on')
 
     #case 3, overlapping 1D dist
     k3 = k
+    fig_num = 3
     P3,Q3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
-    PlotData(P3,Q3)
+    PlotData(P3,Q3,fig_num,plotstyle='1d',save_fig='on')
     c3_precision, c3_recall = PRCover(P3,Q3,k3)
     density3, coverage3 = ComputeDC(P3,Q3,k3)
     p3, r3 = ComputePR(P3,Q3,k3)
     Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
-    PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall)
+    PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
 
     #case 4, matching 2D dist
     k4 = k
+    fig_num = 4
     P4, Q4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
-    PlotData(P2,Q2)
-    c2_precision, c2_recall = PRCover(P2,Q2,k2)
-    density2, coverage2 = ComputeDC(P2,Q2,k2)
-    p2, r2 = ComputePR(P2,Q2,k2)
-    Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
-    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall)
+    PlotData(P4,Q4,fig_num,plotstyle='1d',save_fig='on')
+    c4_precision, c4_recall = PRCover(P4,Q4,k4)
+    density4, coverage4 = ComputeDC(P4,Q4,k4)
+    p4, r4 = ComputePR(P4,Q4,k4)
+    Ip4, Ir4 = ComputeIPR(P4,Q4,k4)
+    PlotResults(p4,r4,Ip4,Ir4,density4,coverage4,c4_precision,c4_recall,fig_num,save_fig='on')
 
+    #case 5, disjoint 2D dist
+    k5 = k
+    fig_num = 5
+    P5, Q5 = UniformData2D(1000,1000,5,7,13,19,23,29,37,49,r_seed)
+    PlotData(P5,Q5,fig_num,plotstyle='1d',save_fig='on')
+    c5_precision, c5_recall = PRCover(P5,Q5,k5)
+    density5, coverage5 = ComputeDC(P5,Q5,k5)
+    p5, r5 = ComputePR(P5,Q5,k5)
+    Ip5, Ir5 = ComputeIPR(P5,Q5,k5)
+    PlotResults(p5,r5,Ip5,Ir5,density5,coverage5,c5_precision,c5_recall,fig_num,save_fig='on')
+     
+    #case 6, overlapping 2D dist
+    k6 = k
+    fig_num = 6
+    P6, Q6 = UniformData2D(1000,1000,5,15,25,35,10,20,30,40,r_seed)
+    PlotData(P6,Q6,fig_num,plotstyle='1d',save_fig='on')
+    c6_precision, c6_recall = PRCover(P6,Q6,k6)
+    density6, coverage6 = ComputeDC(P6,Q6,k6)
+    p6, r6 = ComputePR(P6,Q6,k6)
+    Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
+    PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
 
+    #case 7, matching Gaussians
+    k7 = k
+    fig_num = 7
+    P7, Q7 = Gaussian2D(1000,1000,17,23,17,23,1,1,7)
+    PlotData(P7,Q7,fig_num,plotstyle='1d',save_fig='on')
+    c7_precision, c7_recall = PRCover(P7,Q7,k7)
+    density7, coverage7 = ComputeDC(P7,Q7,k7)
+    p7, r7 = ComputePR(P7,Q7,k7)
+    Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
+    PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
 
+    #case 8, 'disjoint' Gaussians
+    k8 = k
+    fig_num = 8
+    P8, Q8 = Gaussian2D(1000,1000,17,23,117,123,1,1,7)
+    PlotData(P8,Q8,fig_num,plotstyle='1d',save_fig='on')
+    c8_precision, c8_recall = PRCover(P8,Q8,k8)
+    density8, coverage8 = ComputeDC(P8,Q8,k8)
+    p8, r8 = ComputePR(P8,Q8,k8)
+    Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
+    PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
 
-
-
-
-
+    #case 9, 'overlapping' Gaussians
+    k9 = k
+    fig_num = 9
+    P9, Q9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
+    PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
+    c9_precision, c9_recall = PRCover(P9,Q9,k9)
+    density9, coverage9 = ComputeDC(P9,Q9,k9)
+    p9, r9 = ComputePR(P9,Q9,k9)
+    Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
+    PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
 
 def TestDataGenerator():
     x_vals = [-1,-1,-1,0,0,0,1,1,1]
@@ -440,7 +490,7 @@ def TestDataGenerator():
 
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
-def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall):
+def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, fig_num, save_fig ='off'):
 
     fig, ax = plt.subplots(figsize=(10,10))
     ax.set(xlim=(0,1), ylim=(0,1))
@@ -453,6 +503,10 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
     ax.text(0.65, 1.02, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
     ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
 
+    #Saves an image of the plot in the appropriate directory with appropriate naming.
+    if save_fig == 'on':
+        fig.savefig("Experiments/Results%d.png"%(fig_num))
+    
     plt.show()
 
 def UnitTest2():
