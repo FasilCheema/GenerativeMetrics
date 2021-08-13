@@ -21,7 +21,7 @@ def ComputePR(P,Q,k):
     num_angles = 1001
     
     cluster_data = np.vstack([P,Q])
-    kmeans = sklearn.cluster.MiniBatchKMeans(n_clusters=k,n_init=10)
+    kmeans = sklearn.cluster.MiniBatchKMeans(n_clusters=(k),n_init=10)
     labels = kmeans.fit(cluster_data).labels_
 
     true_labels = labels[:len(P)]
@@ -63,8 +63,8 @@ def PRCover(P,Q,k):
     num_P = P.shape[0]
     num_Q = Q.shape[0]
     
-    nbrs_P = NearestNeighbors(n_neighbors=(3*k), algorithm='kd_tree').fit(P)
-    nbrs_Q = NearestNeighbors(n_neighbors=(3*k), algorithm='kd_tree').fit(Q)
+    nbrs_P = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(P)
+    nbrs_Q = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(Q)
 
     #returns KNN distances and indices for each data sample
     dist_P, ind_P = nbrs_P.kneighbors(P)
@@ -80,22 +80,27 @@ def PRCover(P,Q,k):
     r_sum = 0
 
     for i in range(num_P):
-        if PR_Cover_Indicator(P[i],Q,dist_P) == 1:
+        return_val = PR_Cover_Indicator(P[i],Q,dist_P[i])
+        if return_val == 1:
             p_sum += 1
 
+    cover_precision = p_sum/num_P
 
     for j in range(num_Q): 
-        if PR_Cover_Indicator(Q[i],P,dist_Q) == 1:
+        return_val = PR_Cover_Indicator(Q[j],P,dist_Q[j])
+        if return_val == 1:
             r_sum += 1
 
-    cover_precision = p_sum/num_P
-    cover_recall    = r_sum/num_Q
+    cover_recall = r_sum/num_Q
 
     return cover_precision, cover_recall
 
 def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set):
-    
-    k = k_nn_set.shape[1] + 1
+    #Indicator function that checks if the number of pts from the set that lie within the k-NN ball of
+    #the input point exceeds the required number of neighbors (a third of the NN)
+
+    #Because we removed the 1st column due to 1-NN always being the pt itself (useless information) 
+    k = len(k_nn_set)
     num_nbrs = k/3
     num_pts  = sample_set.shape[0]
 
@@ -104,7 +109,7 @@ def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set):
     for i in range(num_pts):
         curr_dist = np.linalg.norm(sample_set[i] - sample_pt)
         
-        if curr_dist <= k_nn_set[i][k-2]:
+        if curr_dist <= k_nn_set[k-1]:
             set_pts_in_knn += 1
     
     if set_pts_in_knn >= num_nbrs:
@@ -135,8 +140,8 @@ def IPR_Indicator_Function(sample_pt, sample_set, k_nn_set):
 
 def ComputeIPR(P,Q,k):
     #Computes improved precision and recall as in the 2019 paper. 
-    nbrs_P = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(P)
-    nbrs_Q = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(Q)
+    nbrs_P = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(P)  # We use k+1 because we want k DISTINCT NN and because the algorithm always includes the point itself as its 1-NN (which we discard) we use (k+1)-NN 
+    nbrs_Q = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(Q)
 
     #returns KNN distances and indices for each data sample
     dist_P, ind_P = nbrs_P.kneighbors(P)
@@ -183,8 +188,8 @@ def ComputeDC(P,Q,k):
     column for both matrices and thus whenever k is mentioned we are actually referring to 
     k-1. So if we input k =2 we are actually finding the 1-NN not including a point to itself
     '''
-    nbrs_P = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(P)
-    nbrs_Q = NearestNeighbors(n_neighbors=k, algorithm='kd_tree').fit(Q)
+    nbrs_P = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(P) # Use k+1 NN because 1-NN is always point itself
+    nbrs_Q = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(Q)
 
     dist_P, ind_P = nbrs_P.kneighbors(P)
     dist_Q, ind_Q = nbrs_Q.kneighbors(Q)
@@ -435,6 +440,113 @@ def Experiments():
     k9 = k
     fig_num = 9
     P9, Q9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
+    PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
+    c9_precision, c9_recall = PRCover(P9,Q9,k9)
+    density9, coverage9 = ComputeDC(P9,Q9,k9)
+    p9, r9 = ComputePR(P9,Q9,k9)
+    Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
+    PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
+
+def Experiments2():
+# Set of experiments to be conducted swapped P and Q 
+    r_seed = 7
+    k = 3
+    
+    #1D point generator 
+    #************************ 
+     
+    #case 1, matching 1D dist
+    k1 = k
+    fig_num = 10
+    Q1,P1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
+    PlotData(P1,Q1,fig_num, plotstyle='1d',save_fig = 'on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k1)
+    density1, coverage1 = ComputeDC(P1,Q1,k1)
+    p1, r1 = ComputePR(P1,Q1,k1)
+    Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+    #case 2, disjoint 1D dist
+    k2 = k
+    fig_num = 11
+    Q2,P2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
+    PlotData(P2,Q2,fig_num,plotstyle='1d',save_fig='on')
+    c2_precision, c2_recall = PRCover(P2,Q2,k2)
+    density2, coverage2 = ComputeDC(P2,Q2,k2)
+    p2, r2 = ComputePR(P2,Q2,k2)
+    Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
+    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall,fig_num,save_fig='on')
+
+    #case 3, overlapping 1D dist
+    k3 = k
+    fig_num = 12
+    Q3,P3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
+    PlotData(P3,Q3,fig_num,plotstyle='1d',save_fig='on')
+    c3_precision, c3_recall = PRCover(P3,Q3,k3)
+    density3, coverage3 = ComputeDC(P3,Q3,k3)
+    p3, r3 = ComputePR(P3,Q3,k3)
+    Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
+    PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
+
+    #case 4, matching 2D dist
+    k4 = k
+    fig_num = 13
+    Q4, P4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
+    PlotData(P4,Q4,fig_num,plotstyle='1d',save_fig='on')
+    c4_precision, c4_recall = PRCover(P4,Q4,k4)
+    density4, coverage4 = ComputeDC(P4,Q4,k4)
+    p4, r4 = ComputePR(P4,Q4,k4)
+    Ip4, Ir4 = ComputeIPR(P4,Q4,k4)
+    PlotResults(p4,r4,Ip4,Ir4,density4,coverage4,c4_precision,c4_recall,fig_num,save_fig='on')
+
+    #case 5, disjoint 2D dist
+    k5 = k
+    fig_num = 14
+    Q5, P5 = UniformData2D(1000,1000,5,7,13,19,23,29,37,49,r_seed)
+    PlotData(P5,Q5,fig_num,plotstyle='1d',save_fig='on')
+    c5_precision, c5_recall = PRCover(P5,Q5,k5)
+    density5, coverage5 = ComputeDC(P5,Q5,k5)
+    p5, r5 = ComputePR(P5,Q5,k5)
+    Ip5, Ir5 = ComputeIPR(P5,Q5,k5)
+    PlotResults(p5,r5,Ip5,Ir5,density5,coverage5,c5_precision,c5_recall,fig_num,save_fig='on')
+     
+    #case 6, overlapping 2D dist
+    k6 = k
+    fig_num = 15
+    Q6, P6 = UniformData2D(1000,1000,5,15,25,35,10,20,30,40,r_seed)
+    PlotData(P6,Q6,fig_num,plotstyle='1d',save_fig='on')
+    c6_precision, c6_recall = PRCover(P6,Q6,k6)
+    density6, coverage6 = ComputeDC(P6,Q6,k6)
+    p6, r6 = ComputePR(P6,Q6,k6)
+    Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
+    PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
+
+    #case 7, matching Gaussians
+    k7 = k
+    fig_num = 16
+    Q7, P7 = Gaussian2D(1000,1000,17,23,17,23,1,1,7)
+    PlotData(P7,Q7,fig_num,plotstyle='1d',save_fig='on')
+    c7_precision, c7_recall = PRCover(P7,Q7,k7)
+    density7, coverage7 = ComputeDC(P7,Q7,k7)
+    p7, r7 = ComputePR(P7,Q7,k7)
+    Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
+    PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
+
+    #case 8, 'disjoint' Gaussians
+    k8 = k
+    fig_num = 17
+    Q8, P8 = Gaussian2D(1000,1000,17,23,117,123,1,1,7)
+    PlotData(P8,Q8,fig_num,plotstyle='1d',save_fig='on')
+    c8_precision, c8_recall = PRCover(P8,Q8,k8)
+    density8, coverage8 = ComputeDC(P8,Q8,k8)
+    p8, r8 = ComputePR(P8,Q8,k8)
+    Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
+    PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
+
+    #case 9, 'overlapping' Gaussians
+    k9 = k
+    fig_num = 18
+    Q9, P9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
     PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
     c9_precision, c9_recall = PRCover(P9,Q9,k9)
     density9, coverage9 = ComputeDC(P9,Q9,k9)
