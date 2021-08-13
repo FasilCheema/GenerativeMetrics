@@ -228,7 +228,7 @@ def ComputeDC(P,Q,k):
 
     return density, coverage
 
-def PlotData(P,Q, plotstyle = '1d'):
+def PlotData(P,Q, plotstyle = '1d', fig_num):
     #Takes the samples and plots them depending on the dimensionality
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
@@ -237,7 +237,9 @@ def PlotData(P,Q, plotstyle = '1d'):
     if (dim_P == 1) and (dim_Q == 1):
 
         if plotstyle != '3d':
-            fig, ax = plt.subplots(figsize=(10,10))
+            #fig, ax = plt.subplots(figsize=(10,10))
+            fig = plt.figure(fig_num) 
+            ax = fig.add_subplot(figsize=(10,10))
             ax.set_xlabel('value')
             ax.set_ylabel('frequency')
             ax.set_title('Histogram of P (true data) and Q (gen data)')
@@ -325,11 +327,12 @@ def Experiments():
     r_seed = 7
     num_vals = 1000
     init_val = 0
+    k = 3
     
     #1D point generator 
     
     #case 1, matching 1D dist
-    k1 = 3
+    k1 = k
     P1,Q1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
     PlotData(P1,Q1)
     c1_precision, c1_recall = PRCover(P1,Q1,k1)
@@ -339,7 +342,7 @@ def Experiments():
     PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall)
 
     #case 2, disjoint 1D dist
-    k2 = 3
+    k2 = k
     P2,Q2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
     PlotData(P2,Q2)
     c2_precision, c2_recall = PRCover(P2,Q2,k2)
@@ -347,6 +350,28 @@ def Experiments():
     p2, r2 = ComputePR(P2,Q2,k2)
     Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
     PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall)
+
+    #case 3, overlapping 1D dist
+    k3 = k
+    P3,Q3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
+    PlotData(P3,Q3)
+    c3_precision, c3_recall = PRCover(P3,Q3,k3)
+    density3, coverage3 = ComputeDC(P3,Q3,k3)
+    p3, r3 = ComputePR(P3,Q3,k3)
+    Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
+    PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall)
+
+    #case 4, matching 2D dist
+    k4 = k
+    P4, Q4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
+    PlotData(P2,Q2)
+    c2_precision, c2_recall = PRCover(P2,Q2,k2)
+    density2, coverage2 = ComputeDC(P2,Q2,k2)
+    p2, r2 = ComputePR(P2,Q2,k2)
+    Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
+    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall)
+
+
 
 
 
