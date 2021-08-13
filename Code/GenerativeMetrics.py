@@ -228,7 +228,7 @@ def ComputeDC(P,Q,k):
 
     return density, coverage
 
-def PlotData(P,Q, plotstyle = '1d', fig_num):
+def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
     #Takes the samples and plots them depending on the dimensionality
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
@@ -238,7 +238,7 @@ def PlotData(P,Q, plotstyle = '1d', fig_num):
 
         if plotstyle != '3d':
             #fig, ax = plt.subplots(figsize=(10,10))
-            fig = plt.figure(fig_num) 
+            fig = plt.figure()
             ax = fig.add_subplot(figsize=(10,10))
             ax.set_xlabel('value')
             ax.set_ylabel('frequency')
@@ -248,6 +248,10 @@ def PlotData(P,Q, plotstyle = '1d', fig_num):
             ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
             ax.legend(['True distribution P','Generated distribution Q'])
             plt.legend()
+
+            #Saves an image of the plot in the appropriate directory with appropriate naming.
+            if save_fig == 'on':
+                fig.savefig("Experiments/experiment%d.png"%(fig_num))
 
             plt.show()
         else:
@@ -262,6 +266,10 @@ def PlotData(P,Q, plotstyle = '1d', fig_num):
             hist, bins = np.histogram(Q, bins='auto')
             xs = (bins[:-1] + bins[1:])/2
             ax.bar(xs, hist, zs =  10, alpha=0.8, color ='red')
+            
+            #Saves an image of the plot in the appropriate directory with appropriate naming.
+            if save_fig == 'on':
+                fig.savefig("Experiments/experiment%d.png"%(fig_num))
     else:
         # assumes 2d plots
         P_x = P[:,0]
@@ -276,6 +284,11 @@ def PlotData(P,Q, plotstyle = '1d', fig_num):
         ax.set_title('Plotting 2d experiment of generated and real distributions')
         ax.set_ylabel('y axis')
         ax.set_xlabel('x axis')
+        
+        #Saves an image of the plot in the appropriate directory with appropriate naming.
+        if save_fig == 'on':
+                fig.savefig("Experiments/experiment%d.png"%(fig_num))
+        
         plt.show()
 
 def UniformData1D(n,m,a_P,b_P,a_Q,b_Q,r_seed):
