@@ -59,10 +59,13 @@ def ComputePR(P,Q,k):
     return precision, recall
 
 def PRCover(P,Q,k):
+    #Computes the proposed cover precision and cover recall metrics
 
+    #Obtains the number of samples in both samples sets P and Q
     num_P = P.shape[0]
     num_Q = Q.shape[0]
     
+    #Computes the NN of both P and Q
     nbrs_P = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(P)
     nbrs_Q = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(Q)
 
@@ -76,14 +79,18 @@ def PRCover(P,Q,k):
     ind_P  =  ind_P[:,1:]
     ind_Q  =  ind_Q[:,1:]
 
+    #intialize metric counter
     p_sum = 0
     r_sum = 0
 
+
+    #iterates through sample set P and checks if the number of  set pts within the sample pt k-NN are above the desired number
     for i in range(num_P):
         return_val = PR_Cover_Indicator(P[i],Q,dist_P[i])
         if return_val == 1:
             p_sum += 1
 
+    #Computes cover_precision (num times k-nn ball for pt is sufficiently mixed divided )
     cover_precision = p_sum/num_P
 
     for j in range(num_Q): 
