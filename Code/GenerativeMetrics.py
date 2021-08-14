@@ -15,7 +15,7 @@ from math import cos,sin,radians
 from sklearn.utils.extmath import density
 
 def ComputePR(P,Q,k):
-    #Function to compute precision, and recall as in Sajjadi et al 2018 
+    # Function to compute precision, and recall as in Sajjadi et al 2018 
     # (Code is heavily recycled from there)
     epsilon = 1e-10
     num_angles = 1001
@@ -49,7 +49,7 @@ def ComputePR(P,Q,k):
     precision = np.minimum(ref_dist_2d*slopes_2d, eval_dist_2d).sum(axis=1)
     recall = precision / slopes
 
-    # handle numerical instabilities leaing to precision/recall just above 1
+    # Handle numerical instabilities leaing to precision/recall just above 1
     max_val = max(np.max(precision), np.max(recall))
     if max_val > 1.001:
         raise ValueError('Detected value > 1.001, this should not happen.')
@@ -59,66 +59,70 @@ def ComputePR(P,Q,k):
     return precision, recall
 
 def PRCover(P,Q,k):
-    #Computes the proposed cover precision and cover recall metrics
+    # Computes the proposed cover precision and cover recall metrics
 
-    #Obtains the number of samples in both samples sets P and Q
+    # Obtains the number of samples in both samples sets P and Q
     num_P = P.shape[0]
     num_Q = Q.shape[0]
     
-    #Computes the NN of both P and Q
+    # Computes the NN of both P and Q
     nbrs_P = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(P)
     nbrs_Q = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(Q)
 
-    #returns KNN distances and indices for each data sample
+    # Returns KNN distances and indices for each data sample
     dist_P, ind_P = nbrs_P.kneighbors(P)
     dist_Q, ind_Q = nbrs_Q.kneighbors(Q)
 
-    #Note that the knn returns the pt itself as 1NN so we discard first column
+    # Note that the knn returns the pt itself as 1NN so we discard first column
     dist_P = dist_P[:,1:]
     dist_Q = dist_Q[:,1:]
     ind_P  =  ind_P[:,1:]
     ind_Q  =  ind_Q[:,1:]
 
-    #intialize metric counter
+    # Intialize metric counter
     p_sum = 0
     r_sum = 0
 
-
-    #iterates through sample set P and checks if the number of  set pts within the sample pt k-NN are above the desired number
+    # Iterates through sample set P and checks if the number of set pts within the sample pt k-NN are above the desired number
     for i in range(num_P):
         return_val = PR_Cover_Indicator(P[i],Q,dist_P[i])
         if return_val == 1:
             p_sum += 1
 
-    #Computes cover_precision (num times k-nn ball for pt is sufficiently mixed divided )
+    # Computes cover_precision (num times k-nn ball for pt is sufficiently mixed divided )
     cover_precision = p_sum/num_P
 
+    # Iterates through sample set Q and checks if the number of set pts within the sample pt k-NN are above the desired number
     for j in range(num_Q): 
         return_val = PR_Cover_Indicator(Q[j],P,dist_Q[j])
         if return_val == 1:
             r_sum += 1
 
+    # Computes cover_recall (num times k-nn ball for pt is sufficiently mixed divided )
     cover_recall = r_sum/num_Q
 
     return cover_precision, cover_recall
 
 def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set):
-    #Indicator function that checks if the number of pts from the set that lie within the k-NN ball of
-    #the input point exceeds the required number of neighbors (a third of the NN)
+    # Indicator function that checks if the number of pts from the set that lie within the k-NN ball of
+    # the input point exceeds the required number of neighbors (a third of the NN)
 
-    #Because we removed the 1st column due to 1-NN always being the pt itself (useless information) 
+    # Obtain important info such as choice of k, num_nbrs which is the min num of pts within a k-nn ball
     k = len(k_nn_set)
     num_nbrs = k/3
     num_pts  = sample_set.shape[0]
 
+    # Initialize counter for num pts within k-nn ball 
     set_pts_in_knn = 0 
     
+    # Iterate through each pt in set and check if it lies within main pt's k-nn ball if so add to count
     for i in range(num_pts):
         curr_dist = np.linalg.norm(sample_set[i] - sample_pt)
         
         if curr_dist <= k_nn_set[k-1]:
             set_pts_in_knn += 1
     
+    # Checks if the number of pts that are within k-nn ball of main pt is above threshold (num_nbrs) if so return 1
     if set_pts_in_knn >= num_nbrs:
         indicator_val = 1
     else:
@@ -128,7 +132,7 @@ def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set):
 
 
 def IPR_Indicator_Function(sample_pt, sample_set, k_nn_set):
-    #Checks to see if the pt passed into this function lies within the knn sphere of any point in the set passed into the function  
+    # Checks to see if the pt passed into this function lies within the knn sphere of any point in the set passed into the function  
 
     k = k_nn_set.shape[1]    
     val = 0 
@@ -146,36 +150,37 @@ def IPR_Indicator_Function(sample_pt, sample_set, k_nn_set):
     return val 
 
 def ComputeIPR(P,Q,k):
-    #Computes improved precision and recall as in the 2019 paper. 
+    # Computes improved precision and recall as in the 2019 paper. 
     nbrs_P = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(P)  # We use k+1 because we want k DISTINCT NN and because the algorithm always includes the point itself as its 1-NN (which we discard) we use (k+1)-NN 
     nbrs_Q = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(Q)
 
-    #returns KNN distances and indices for each data sample
+    # Returns KNN distances and indices for each data sample
     dist_P, ind_P = nbrs_P.kneighbors(P)
     dist_Q, ind_Q = nbrs_Q.kneighbors(Q)
 
-    #Note that the knn returns the pt itself as 1NN so we discard first column
+    # Note that the knn returns the pt itself as 1NN so we discard first column
     dist_P = dist_P[:,1:]
     dist_Q = dist_Q[:,1:]
     ind_P  =  ind_P[:,1:]
     ind_Q  =  ind_Q[:,1:]
 
-    #Assumes that the dimensionality of P and Q are the same
+    # Assumes that the dimensionality of P and Q are the same
     N = P.shape[0]
     M = Q.shape[0]
     d = P.shape[1] 
 
+    # Initialize counter for precision and recall
     p_sum = 0
     r_sum = 0
     
-    #Compute precision
+    # Compute precision
     for i in range(M):
         return_val = IPR_Indicator_Function(Q[i],P,dist_P)
         if  return_val == 1:
             p_sum += 1
     precision = p_sum/M
 
-    #Compute recall       
+    # Compute recall       
     for i in range(N):
         return_val = IPR_Indicator_Function(P[i],Q,dist_Q)
         if  return_val == 1:
@@ -185,9 +190,8 @@ def ComputeIPR(P,Q,k):
     return precision, recall
 
 
-
 def ComputeDC(P,Q,k):
-    #Computes density and coverage as in Naeem et al 2020
+    # Computes density and coverage as in Naeem et al 2020
     '''
     Note: that normally knn computation always includes 1-NN as the point itself. As this 
     leads to the first column of the distance matrix to always be 0 and the first column 
@@ -195,53 +199,54 @@ def ComputeDC(P,Q,k):
     column for both matrices and thus whenever k is mentioned we are actually referring to 
     k-1. So if we input k =2 we are actually finding the 1-NN not including a point to itself
     '''
+    # Compute NN for P and Q and find distance and index matrices
     nbrs_P = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(P) # Use k+1 NN because 1-NN is always point itself
     nbrs_Q = NearestNeighbors(n_neighbors=k+1, algorithm='kd_tree').fit(Q)
-
     dist_P, ind_P = nbrs_P.kneighbors(P)
     dist_Q, ind_Q = nbrs_Q.kneighbors(Q)
 
-    #Note that the knn returns the pt itself as 1NN so we discard first column
+    # Note that the knn returns the pt itself as 1NN so we discard first column
     dist_P = dist_P[:,1:]
     dist_Q = dist_Q[:,1:]
     ind_P  =  ind_P[:,1:]
     ind_Q  =  ind_Q[:,1:]
 
-    #Assumes that the dimensionality of P and Q are the same
+    # Assumes that the dimensionality of P and Q are the same
     N = P.shape[0]
     M = Q.shape[0]
     d = P.shape[1]
 
+    # Initialize density and coverage counter
     d_sum = 0
     c_sum = 0
 
-    #Iterates through each generated sample and checks within how many real samples it lies  
+    # Iterates through each generated sample and checks within how many real samples it lies  
     for i in range(N):
         for j in range(M):
             curr_dist = np.linalg.norm((Q[j]-P[i]))
 
-            #checks if distance is within the k-nn distance
+            # Checks if distance is within the k-nn distance
             if curr_dist <= dist_P[i][k-2]:
                 d_sum += 1
 
-
+    # Iterates through each real sample and checks within how many generated samples it lies  
     for i in range(N):
         for j in range(M):
             curr_dist = np.linalg.norm((Q[j]-P[i]))
 
-            #checks if distance is within the k-nn distance
+            # Checks if distance is within the k-nn distance
             if curr_dist <= dist_P[i][k-2]:
                 c_sum += 1
                 break
 
-    
+    # Compute density and coverage by dividing count by appropriate number
     density  = d_sum/((k-1)*M)
     coverage = c_sum/N 
 
     return density, coverage
 
 def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
-    #Takes the samples and plots them depending on the dimensionality
+    # Takes the samples and plots them depending on the dimensionality
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
 
@@ -249,7 +254,6 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
     if (dim_P == 1) and (dim_Q == 1):
 
         if plotstyle != '3d':
-            #fig, ax = plt.subplots(figsize=(10,10))
             fig = plt.figure(figsize=(10,10))
             ax = fig.add_subplot()
             ax.set_xlabel('value')
@@ -261,13 +265,13 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
             ax.legend(['True distribution P','Generated distribution Q'])
             plt.legend()
 
-            #Saves an image of the plot in the appropriate directory with appropriate naming.
+            # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
                 fig.savefig("Experiments/InputData%d.png"%(fig_num))
 
             plt.show()
         else:
-            #Code to do 3d histograms
+            # Code to do 3d histograms
             fig = plt.figure()
             ax  = fig.add_subplot(111, projection='3d')
 
@@ -279,7 +283,7 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
             xs = (bins[:-1] + bins[1:])/2
             ax.bar(xs, hist, zs =  10, alpha=0.8, color ='red')
             
-            #Saves an image of the plot in the appropriate directory with appropriate naming.
+            # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
                 fig.savefig("Experiments/InputData%d.png"%(fig_num))
     else:
@@ -297,7 +301,7 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
         ax.set_ylabel('y axis')
         ax.set_xlabel('x axis')
         
-        #Saves an image of the plot in the appropriate directory with appropriate naming.
+        # Saves an image of the plot in the appropriate directory with appropriate naming.
         if save_fig == 'on':
                 fig.savefig("Experiments/InputData%d.png"%(fig_num))
         
@@ -352,10 +356,10 @@ def Experiments():
     r_seed = 7
     k = 3
     
-    #1D point generator 
+    # 1D point generator 
     #************************ 
      
-    #case 1, matching 1D dist
+    # Case 1, matching 1D dist
     k1 = k
     fig_num = 1
     P1,Q1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
@@ -366,7 +370,7 @@ def Experiments():
     Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
     PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
 
-    #case 2, disjoint 1D dist
+    # Case 2, disjoint 1D dist
     k2 = k
     fig_num = 2
     P2,Q2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
@@ -377,7 +381,7 @@ def Experiments():
     Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
     PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall,fig_num,save_fig='on')
 
-    #case 3, overlapping 1D dist
+    # Case 3, overlapping 1D dist
     k3 = k
     fig_num = 3
     P3,Q3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
@@ -388,7 +392,7 @@ def Experiments():
     Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
     PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
 
-    #case 4, matching 2D dist
+    # Case 4, matching 2D dist
     k4 = k
     fig_num = 4
     P4, Q4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
@@ -399,7 +403,7 @@ def Experiments():
     Ip4, Ir4 = ComputeIPR(P4,Q4,k4)
     PlotResults(p4,r4,Ip4,Ir4,density4,coverage4,c4_precision,c4_recall,fig_num,save_fig='on')
 
-    #case 5, disjoint 2D dist
+    # Case 5, disjoint 2D dist
     k5 = k
     fig_num = 5
     P5, Q5 = UniformData2D(1000,1000,5,7,13,19,23,29,37,49,r_seed)
@@ -410,7 +414,7 @@ def Experiments():
     Ip5, Ir5 = ComputeIPR(P5,Q5,k5)
     PlotResults(p5,r5,Ip5,Ir5,density5,coverage5,c5_precision,c5_recall,fig_num,save_fig='on')
      
-    #case 6, overlapping 2D dist
+    # Case 6, overlapping 2D dist
     k6 = k
     fig_num = 6
     P6, Q6 = UniformData2D(1000,1000,5,15,25,35,10,20,30,40,r_seed)
@@ -421,7 +425,7 @@ def Experiments():
     Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
     PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
 
-    #case 7, matching Gaussians
+    # Case 7, matching Gaussians
     k7 = k
     fig_num = 7
     P7, Q7 = Gaussian2D(1000,1000,17,23,17,23,1,1,7)
@@ -432,7 +436,7 @@ def Experiments():
     Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
     PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
 
-    #case 8, 'disjoint' Gaussians
+    # Case 8, 'disjoint' Gaussians
     k8 = k
     fig_num = 8
     P8, Q8 = Gaussian2D(1000,1000,17,23,117,123,1,1,7)
@@ -443,7 +447,7 @@ def Experiments():
     Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
     PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
 
-    #case 9, 'overlapping' Gaussians
+    # Case 9, 'overlapping' Gaussians
     k9 = k
     fig_num = 9
     P9, Q9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
@@ -462,7 +466,7 @@ def Experiments2():
     #1D point generator 
     #************************ 
      
-    #case 1, matching 1D dist
+    # Case 1, matching 1D dist
     k1 = k
     fig_num = 10
     Q1,P1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
@@ -473,7 +477,7 @@ def Experiments2():
     Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
     PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
 
-    #case 2, disjoint 1D dist
+    # Case 2, disjoint 1D dist
     k2 = k
     fig_num = 11
     Q2,P2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
@@ -484,7 +488,7 @@ def Experiments2():
     Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
     PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall,fig_num,save_fig='on')
 
-    #case 3, overlapping 1D dist
+    # Case 3, overlapping 1D dist
     k3 = k
     fig_num = 12
     Q3,P3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
@@ -495,7 +499,7 @@ def Experiments2():
     Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
     PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
 
-    #case 4, matching 2D dist
+    # Case 4, matching 2D dist
     k4 = k
     fig_num = 13
     Q4, P4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
@@ -506,7 +510,7 @@ def Experiments2():
     Ip4, Ir4 = ComputeIPR(P4,Q4,k4)
     PlotResults(p4,r4,Ip4,Ir4,density4,coverage4,c4_precision,c4_recall,fig_num,save_fig='on')
 
-    #case 5, disjoint 2D dist
+    # Case 5, disjoint 2D dist
     k5 = k
     fig_num = 14
     Q5, P5 = UniformData2D(1000,1000,5,7,13,19,23,29,37,49,r_seed)
@@ -517,7 +521,7 @@ def Experiments2():
     Ip5, Ir5 = ComputeIPR(P5,Q5,k5)
     PlotResults(p5,r5,Ip5,Ir5,density5,coverage5,c5_precision,c5_recall,fig_num,save_fig='on')
      
-    #case 6, overlapping 2D dist
+    # Case 6, overlapping 2D dist
     k6 = k
     fig_num = 15
     Q6, P6 = UniformData2D(1000,1000,5,15,25,35,10,20,30,40,r_seed)
@@ -528,7 +532,7 @@ def Experiments2():
     Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
     PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
 
-    #case 7, matching Gaussians
+    # Case 7, matching Gaussians
     k7 = k
     fig_num = 16
     Q7, P7 = Gaussian2D(1000,1000,17,23,17,23,1,1,7)
@@ -539,7 +543,7 @@ def Experiments2():
     Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
     PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
 
-    #case 8, 'disjoint' Gaussians
+    # Case 8, 'disjoint' Gaussians
     k8 = k
     fig_num = 17
     Q8, P8 = Gaussian2D(1000,1000,17,23,117,123,1,1,7)
@@ -550,7 +554,7 @@ def Experiments2():
     Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
     PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
 
-    #case 9, 'overlapping' Gaussians
+    # Case 9, 'overlapping' Gaussians
     k9 = k
     fig_num = 18
     Q9, P9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
@@ -578,7 +582,7 @@ def TestDataGenerator():
     geny1 = []
     geny2 = []
 
-    #Populate the arrays, the boundary values are defined by the radius of the circles, 
+    # Populate the arrays, the boundary values are defined by the radius of the circles, 
     for i in range(len(x_vals)):
         boundary_xvals.append(x_vals[i]+radius*cos(radians(a_list[i])))
         boundary_yvals.append(y_vals[i]+radius*sin(radians(a_list[i])))
@@ -589,7 +593,7 @@ def TestDataGenerator():
         genx2.append(x_vals[i]+(radius+epsilon)*cos(radians(a_list[i])))
         geny2.append(y_vals[i]+(radius+epsilon)*sin(radians(a_list[i])))
 
-    #convert all generated data points into arrays    
+    # Convert all generated data points into arrays    
     xg1 = np.array(genx1)
     yg1 = np.array(geny1)
     xg2 = np.array(genx2)
