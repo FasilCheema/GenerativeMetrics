@@ -1,6 +1,7 @@
 '''
     Author: Fasil Cheema
-    Purpose: Compute Density and Coverage as described in 2020 paper. 
+    Purpose: Computes several generative metrics such as density and coverage, precision and recall, 
+             improved prevision and improved recall, and our proposed metric cover precision and cover recall. 
 '''
 
 import numpy as np
@@ -245,20 +246,25 @@ def ComputeDC(P,Q,k):
 
     return density, coverage
 
-def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
+def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off',quick_time='off'):
     # Takes the samples and plots them depending on the dimensionality
+    
+    type_dist    = ['1D uniform','2D uniform','2D Gaussian']
+    type_overlap = [' matching distributions',' disjoint distributions',' overlapping distributions'] 
+    text_val     = (fig_num % 3) - 1 
+    
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
-
     
     if (dim_P == 1) and (dim_Q == 1):
 
         if plotstyle != '3d':
+            # Setup and customize figure and plot
             fig = plt.figure(figsize=(10,10))
             ax = fig.add_subplot()
             ax.set_xlabel('value')
             ax.set_ylabel('frequency')
-            ax.set_title('Histogram of P (true data) and Q (gen data)')
+            ax.set_title('Histogram of P (true data) and Q (gen data) both are '+type_dist[text_val]+type_overlap[text_val])
 
             ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label='P True distribution')
             ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
@@ -269,10 +275,12 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
             if save_fig == 'on':
                 fig.savefig("Experiments/InputData%d.png"%(fig_num))
 
-            plt.show()
+            #If in a hurry just saves plots without displaying
+            if quick_time == 'off':
+                plt.show()
         else:
             # Code to do 3d histograms
-            fig = plt.figure()
+            fig = plt.figure(figsize=(10,10))
             ax  = fig.add_subplot(111, projection='3d')
 
             hist, bins = np.histogram(P, bins='auto')
@@ -293,11 +301,11 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
         Q_x = Q[:,0]
         Q_y = Q[:,1]
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10,10))
         ax.scatter(P_x,P_y, color = 'blue')
         ax.scatter(Q_x,Q_y, color = 'red')
         ax.legend(['True Distribution P', 'Gen Distribution Q'])
-        ax.set_title('Plotting 2d experiment of generated and real distributions')
+        ax.set_title('Plotting 2d experiment of generated and real '+type_dist[text_val]+type_overlap[text_val])
         ax.set_ylabel('y axis')
         ax.set_xlabel('x axis')
         
@@ -305,6 +313,36 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off'):
         if save_fig == 'on':
                 fig.savefig("Experiments/InputData%d.png"%(fig_num))
         
+        #If in a hurry just saves plots without displaying
+        if quick_time == 'off':
+            plt.show()
+
+def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, fig_num, save_fig ='off', quick_time='off'):
+
+    # Preformatting of text
+    type_dist    = ['1D uniform','2D uniform','2D Gaussian']
+    type_overlap = [' matching distributions',' disjoint distributions',' overlapping distributions'] 
+    text_val     = (fig_num % 3) - 1 
+    
+    # Plots precision and recall
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.set(xlim=(0,1), ylim=(0,1))
+    ax.fill_between(recall, 0, precision, color='green')
+    ax.set_title('Precision and Recall of '+type_dist[text_val]+type_overlap[text_val])
+    ax.set_xlabel(r'Recall $ \beta $')
+    ax.set_ylabel(r'Precision $ \alpha $')
+
+    # Displays values of metric scores
+    ax.text(0.65, 1.09, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
+    ax.text(0.65, 1.05, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
+    ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
+
+    # Saves an image of the plot in the appropriate directory with appropriate naming.
+    if save_fig == 'on':
+        fig.savefig("Experiments/Results%d.png"%(fig_num))
+    
+    # If in a hurry does not display plots just saves
+    if quick_time == 'off':
         plt.show()
 
 def UniformData1D(n,m,a_P,b_P,a_Q,b_Q,r_seed):
@@ -499,6 +537,9 @@ def Experiments2():
     Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
     PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
 
+    # 2D Uniform point generator
+    # *********************************
+
     # Case 4, matching 2D dist
     k4 = k
     fig_num = 13
@@ -531,6 +572,8 @@ def Experiments2():
     p6, r6 = ComputePR(P6,Q6,k6)
     Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
     PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
+    # 2D Gaussian Generator
+    # *************************
 
     # Case 7, matching Gaussians
     k7 = k
@@ -613,26 +656,8 @@ def TestDataGenerator():
 
     return true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data
 
-def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, fig_num, save_fig ='off'):
-
-    fig, ax = plt.subplots(figsize=(10,10))
-    ax.set(xlim=(0,1), ylim=(0,1))
-    ax.fill_between(recall, 0, precision, color='green')
-    ax.set_title("Precision and Recall")
-    ax.set_xlabel(r'Recall $ \beta $')
-    ax.set_ylabel(r'Precision $ \alpha $')
-
-    ax.text(0.65, 1.07, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
-    ax.text(0.65, 1.02, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
-    ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
-
-    #Saves an image of the plot in the appropriate directory with appropriate naming.
-    if save_fig == 'on':
-        fig.savefig("Experiments/Results%d.png"%(fig_num))
-    
-    plt.show()
-
 def UnitTest2():
+    # Testing the indicator function, taking data from testdatagenerator
 
     nbrs = NearestNeighbors(n_neighbors=8, algorithm='kd_tree').fit(true_data)
     dist, ind = nbrs.kneighbors(true_data)
@@ -646,6 +671,8 @@ def UnitTest2():
     print(test_val)
 
 def UnitTest3():
+    #Tests Improved precision and recall on testdatagenerator
+
     p1,r1 = ComputeIPR(true_data,gen1_data,7)
     print('First PR score: ')
     print(p1, ' ', r1)
@@ -667,7 +694,8 @@ def UnitTest3():
     print(p5, ' ', r5)
 
 def UnitTest4():
-    #Recreate figure 3e in paper by sajjadi et al 2018
+    # Recreate figure 3e in paper by sajjadi et al 2018
+    
     temp1 = np.ones((10,1))
     temp2 = np.ones((10,1))
     temp1 += 1 
