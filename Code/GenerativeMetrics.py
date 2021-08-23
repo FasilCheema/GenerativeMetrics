@@ -5,6 +5,7 @@
 '''
 
 import numpy as np
+from numpy.lib.npyio import save
 from pandas.core.indexing import convert_from_missing_indexer_tuple
 from scipy.stats import norm 
 import matplotlib.pyplot as plt
@@ -249,12 +250,15 @@ def ComputeDC(P,Q,k):
 def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off',quick_time='off'):
     # Takes the samples and plots them depending on the dimensionality
     
-    type_dist    = ['1D uniform','2D uniform','2D Gaussian']
+    type_dist    = ['uniform','uniform','Gaussian']
     type_overlap = [' matching distributions',' disjoint distributions',' overlapping distributions'] 
     text_val     = (fig_num % 3) - 1 
     
     dim_P = P.shape[1]
     dim_Q = Q.shape[1]
+
+    n = P.shape[0]
+    m = Q.shape[0]
     
     if (dim_P == 1) and (dim_Q == 1):
 
@@ -264,11 +268,11 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off',quick_time='off'):
             ax = fig.add_subplot()
             ax.set_xlabel('value')
             ax.set_ylabel('frequency')
-            ax.set_title('Histogram of P (true data) and Q (gen data) both are '+type_dist[text_val]+type_overlap[text_val])
+            ax.set_title('Histogram of P (true data) and Q (gen data) both are 1D '+type_dist[text_val]+type_overlap[text_val])
 
-            ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label='P True distribution')
-            ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label='Q Gen  distribution')
-            ax.legend(['True distribution P','Generated distribution Q'])
+            ax.hist(P, bins = 'auto', color='blue', alpha=0.5, label=('P True distribution (n=%d)'%(n)))
+            ax.hist(Q, bins = 'auto', color='red' , alpha=0.5, label=('Q Gen  distribution (m=%d)'%(m)))
+            ax.legend([('True distribution P (n=%d)'%(n)),('Generated distribution Q (m=%d)'%(m))])
             plt.legend()
 
             # Saves an image of the plot in the appropriate directory with appropriate naming.
@@ -294,7 +298,7 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off',quick_time='off'):
             # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
                 fig.savefig("Experiments/InputData%d.png"%(fig_num))
-    else:
+    elif dim_P == 2:
         # assumes 2d plots
         P_x = P[:,0]
         P_y = P[:,1]
@@ -304,8 +308,33 @@ def PlotData(P,Q, fig_num, plotstyle = '1d', save_fig = 'off',quick_time='off'):
         fig, ax = plt.subplots(figsize=(10,10))
         ax.scatter(P_x,P_y, color = 'blue')
         ax.scatter(Q_x,Q_y, color = 'red')
-        ax.legend(['True Distribution P', 'Gen Distribution Q'])
-        ax.set_title('Plotting 2d experiment of generated and real '+type_dist[text_val]+type_overlap[text_val])
+        ax.legend([('True Distribution P (n=%d)'%(n)), ('Gen Distribution Q (m=%d)'%(m))])
+        ax.set_title('Plotting 2d experiment of generated and real 2D '+type_dist[text_val]+type_overlap[text_val])
+        ax.set_ylabel('y axis')
+        ax.set_xlabel('x axis')
+        
+        # Saves an image of the plot in the appropriate directory with appropriate naming.
+        if save_fig == 'on':
+                fig.savefig("Experiments/InputData%d.png"%(fig_num))
+        
+        #If in a hurry just saves plots without displaying
+        if quick_time == 'off':
+            plt.show()
+    elif dim_P == 3:
+        # assumes 3d plots
+        P_x = P[:,0]
+        P_y = P[:,1]
+        P_z = P[:,2]
+        Q_x = Q[:,0]
+        Q_y = Q[:,1]
+        Q_z = Q[:,2]
+
+        fig = plt.figure(figsize=(10,10))
+        ax = fig.add_subplot(projection='3d')
+        ax.scatter(P_x,P_y,P_z, color = 'blue')
+        ax.scatter(Q_x,Q_y,Q_z, color = 'red')
+        ax.legend([('True Distribution P (n=%d)'%(n)), ('Gen Distribution Q (m=%d)'%(m))])
+        ax.set_title('Plotting 3D experiment of generated and real 3D '+type_dist[text_val]+type_overlap[text_val])
         ax.set_ylabel('y axis')
         ax.set_xlabel('x axis')
         
@@ -386,6 +415,19 @@ def Gaussian2D(n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q, r_seed):
 
     P = np.random.multivariate_normal(np.array([x_P,y_P]),np.array([[std_P,0],[0, std_P]]),(n))
     Q = np.random.multivariate_normal(np.array([x_Q,y_Q]),np.array([[std_Q,0],[0, std_Q]]),(m))
+
+    return P, Q
+
+def Gaussian3D(n,m, x_P, y_P, z_P, x_Q, y_Q, z_Q, std_P, std_Q, r_seed):
+    '''
+    takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
+    and returns a 3d normal distribution in particular the x and y coord of the true and gen dist.
+    '''
+
+    np.random.seed(r_seed)
+
+    P = np.random.multivariate_normal(np.array([x_P,y_P,z_P]),np.array([[std_P,0,0],[0, std_P,0],[0,0,std_P]]),(n))
+    Q = np.random.multivariate_normal(np.array([x_Q,y_Q,z_Q]),np.array([[std_Q,0,0],[0, std_Q,0],[0,0,std_Q]]),(m))
 
     return P, Q
 
@@ -608,6 +650,123 @@ def Experiments2():
     Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
     PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
 
+def Experiments3():
+# Set of experiments to be conducted
+    r_seed = 7
+    k = 3
+    
+    # Case 7, matching Gaussians
+    k7 = k
+    fig_num = 19
+    P7, Q7 = Gaussian3D(1000,1000,17,23,29,17,23,29,1,1,7)
+    PlotData(P7,Q7,fig_num,plotstyle='1d',save_fig='on')
+    c7_precision, c7_recall = PRCover(P7,Q7,k7)
+    density7, coverage7 = ComputeDC(P7,Q7,k7)
+    p7, r7 = ComputePR(P7,Q7,k7)
+    Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
+    PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
+
+    # Case 8, 'disjoint' Gaussians
+    k8 = k
+    fig_num = 20
+    P8, Q8 = Gaussian3D(1000,1000,17,23,29,117,123,129,1,1,7)
+    PlotData(P8,Q8,fig_num,plotstyle='1d',save_fig='on')
+    c8_precision, c8_recall = PRCover(P8,Q8,k8)
+    density8, coverage8 = ComputeDC(P8,Q8,k8)
+    p8, r8 = ComputePR(P8,Q8,k8)
+    Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
+    PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
+
+    # Case 9, 'overlapping' Gaussians
+    k9 = k
+    fig_num = 21
+    P9, Q9 = Gaussian3D(1000,1000,20,20,20,21,21,21,1,1,7)
+    PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
+    c9_precision, c9_recall = PRCover(P9,Q9,k9)
+    density9, coverage9 = ComputeDC(P9,Q9,k9)
+    p9, r9 = ComputePR(P9,Q9,k9)
+    Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
+    PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
+
+def Experiments4():
+    # 3D Uniform Data + 3D Gaussian Data
+    k = 3
+    fig_num = 22
+    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
+    Q1_x, _ = UniformData1D(10000,1000,-1,1,-1,1,7)
+    Q1_y, _ = UniformData1D(10000,1000,-1,1,-1,1,8)
+    Q1_z, _ = UniformData1D(10000,1000,-1,1,-1,1,9)
+    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+def Experiments5():
+    # 3D Uniform Data + 3D Gaussian Data
+    k = 5
+    fig_num = 23
+    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
+    Q1_x, _ = UniformData1D(10000,1000,-1,1,-1,1,7)
+    Q1_y, _ = UniformData1D(10000,1000,-1,1,-1,1,8)
+    Q1_z, _ = UniformData1D(10000,1000,-1,1,-1,1,9)
+    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+def Experiments6():
+    # 3D Uniform Data + 3D Gaussian Data
+    k = 10
+    fig_num = 24
+    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
+    Q1_x, _ = UniformData1D(10000,1000,-1,1,-1,1,7)
+    Q1_y, _ = UniformData1D(10000,1000,-1,1,-1,1,8)
+    Q1_z, _ = UniformData1D(10000,1000,-1,1,-1,1,9)
+    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+def Experiments7():
+    # 3D Uniform Data + 3D Gaussian Data
+    k = 5
+    fig_num = 25
+    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
+    Q1_x, _ = UniformData1D(1000,1000,-1,1,-1,1,7)
+    Q1_y, _ = UniformData1D(1000,1000,-1,1,-1,1,8)
+    Q1_z, _ = UniformData1D(1000,1000,-1,1,-1,1,9)
+    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+def Experiments8():
+    # 3D Uniform Data + 3D Gaussian Data
+    k = 5
+    fig_num = 26
+    P1,   _ = Gaussian3D(5000,1000,0,0,0,0,0,0,1,1,7)
+    Q1_x, _ = UniformData1D(1000,1000,-1,1,-1,1,7)
+    Q1_y, _ = UniformData1D(1000,1000,-1,1,-1,1,8)
+    Q1_z, _ = UniformData1D(1000,1000,-1,1,-1,1,9)
+    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
 def TestDataGenerator():
     x_vals = [-1,-1,-1,0,0,0,1,1,1]
     y_vals = [-1,0,1,-1,0,1,-1,0,1]
