@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import sklearn
 from sklearn.neighbors import NearestNeighbors
 import sklearn.cluster 
-from math import cos,sin,radians
+from math import cos,sin,radians,pi
 
 from sklearn.utils.extmath import density
 
@@ -407,7 +407,7 @@ def UniformData2D(n, m, x1_P, x2_P, y1_P, y2_P, x1_Q, x2_Q, y1_Q, y2_Q, r_seed):
 
 def Gaussian2D(n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q, r_seed):
     '''
-    takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
+    Takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
     and returns a 2d normal distribution in particular the x and y coord of the true and gen dist.
     '''
 
@@ -420,7 +420,7 @@ def Gaussian2D(n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q, r_seed):
 
 def Gaussian3D(n,m, x_P, y_P, z_P, x_Q, y_Q, z_Q, std_P, std_Q, r_seed):
     '''
-    takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
+    Takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
     and returns a 3d normal distribution in particular the x and y coord of the true and gen dist.
     '''
 
@@ -430,6 +430,31 @@ def Gaussian3D(n,m, x_P, y_P, z_P, x_Q, y_Q, z_Q, std_P, std_Q, r_seed):
     Q = np.random.multivariate_normal(np.array([x_Q,y_Q,z_Q]),np.array([[std_Q,0,0],[0, std_Q,0],[0,0,std_Q]]),(m))
 
     return P, Q
+
+def Disc2D(n,m,P_r1,P_r2,Q_r1,Q_r2,r_seed):
+    '''
+    Takes the num samples for both real and gen distribution, where r1 and r2 are the respective start and end radii
+    of whichever distribution is being constructed. Points are generated uniformly between these 2 radii
+    '''
+
+    np.random.seed(r_seed)
+
+    P_r = np.random.uniform(P_r1,P_r2,(n,1))
+    P_Theta = np.random.uniform(0,2*pi,(n,1))
+    
+    P_x = P_r * np.cos(P_Theta)
+    P_y = P_r * np.sin(P_Theta)
+    
+    Q_r = np.random.uniform(Q_r1,Q_r2,(m,1))
+    Q_Theta = np.random.uniform(0,2*pi,(m,1))
+    
+    Q_x = Q_r * np.cos(Q_Theta)
+    Q_y = Q_r * np.sin(Q_Theta)
+
+    P = np.hstack([P_x,P_y])
+    Q = np.hstack([Q_x,Q_y])
+
+    return P,Q
 
 def Experiments():
 # Set of experiments to be conducted
