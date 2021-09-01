@@ -1,362 +1,245 @@
-def Experiments():
-# Set of experiments to be conducted
-    r_seed = 7
+from matplotlib.pyplot import figimage
+from scipy.sparse import data
+from DataGenerator import DataGenerator
+import numpy as np
+from GenerativeMetrics import ComputeDC, PRCover,PR_Cover_Indicator,ComputeIPR,ComputePR, IPR_Indicator_Function
+from Plotter import PlotResults, PlotData
+
+def ExperimentQueue():
+    '''
+    Main function to run all experiments
+    '''
+    #All experiments for reproducibility are intialized with the same random seed of 7
+    r_seed = 7 
     k = 3
+    fig_num = 36
+    n = 1000
+    m = 1000
+    fig_num = Experiment2(r_seed,fig_num,k,n,m)
+    fig_num = Experiment3(r_seed,fig_num,k,n,m)
     
-    # 1D point generator 
-    #************************ 
-     
-    # Case 1, matching 1D dist
-    k1 = k
-    fig_num = 1
-    P1,Q1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
-    PlotData(P1,Q1,fig_num, plotstyle='1d',save_fig = 'on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k1)
-    density1, coverage1 = ComputeDC(P1,Q1,k1)
-    p1, r1 = ComputePR(P1,Q1,k1)
-    Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
 
-    # Case 2, disjoint 1D dist
-    k2 = k
-    fig_num = 2
-    P2,Q2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
-    PlotData(P2,Q2,fig_num,plotstyle='1d',save_fig='on')
-    c2_precision, c2_recall = PRCover(P2,Q2,k2)
-    density2, coverage2 = ComputeDC(P2,Q2,k2)
-    p2, r2 = ComputePR(P2,Q2,k2)
-    Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
-    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall,fig_num,save_fig='on')
+def Experiment1(r_seed, fig_num, k, n, m):
+    #First set of experiments will use the same k,n,m but just vary over the various uniform distributions
+    #**********************************************************************************************
+    DataSet = DataGenerator(r_seed)
 
-    # Case 3, overlapping 1D dist
-    k3 = k
-    fig_num = 3
-    P3,Q3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
-    PlotData(P3,Q3,fig_num,plotstyle='1d',save_fig='on')
-    c3_precision, c3_recall = PRCover(P3,Q3,k3)
-    density3, coverage3 = ComputeDC(P3,Q3,k3)
-    p3, r3 = ComputePR(P3,Q3,k3)
-    Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
-    PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
+    #1D uniform and matching dists
+    fig_num += 1 
+    P, Q = DataSet.UniformData1D(n,m,0,10,0,10)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,0,0,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 0,0,0,save_fig='on',quick_time='on')
 
-    # Case 4, matching 2D dist
-    k4 = k
-    fig_num = 4
-    P4, Q4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
-    PlotData(P4,Q4,fig_num,plotstyle='1d',save_fig='on')
-    c4_precision, c4_recall = PRCover(P4,Q4,k4)
-    density4, coverage4 = ComputeDC(P4,Q4,k4)
-    p4, r4 = ComputePR(P4,Q4,k4)
-    Ip4, Ir4 = ComputeIPR(P4,Q4,k4)
-    PlotResults(p4,r4,Ip4,Ir4,density4,coverage4,c4_precision,c4_recall,fig_num,save_fig='on')
+    #1D uniform and disjoint dists
+    fig_num += 1 
+    P, Q = DataSet.UniformData1D(n,m,0,10,20,30)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,0,0,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 0,0,1,save_fig='on',quick_time='on')
 
-    # Case 5, disjoint 2D dist
-    k5 = k
-    fig_num = 5
-    P5, Q5 = UniformData2D(1000,1000,5,7,13,19,23,29,37,49,r_seed)
-    PlotData(P5,Q5,fig_num,plotstyle='1d',save_fig='on')
-    c5_precision, c5_recall = PRCover(P5,Q5,k5)
-    density5, coverage5 = ComputeDC(P5,Q5,k5)
-    p5, r5 = ComputePR(P5,Q5,k5)
-    Ip5, Ir5 = ComputeIPR(P5,Q5,k5)
-    PlotResults(p5,r5,Ip5,Ir5,density5,coverage5,c5_precision,c5_recall,fig_num,save_fig='on')
-     
-    # Case 6, overlapping 2D dist
-    k6 = k
-    fig_num = 6
-    P6, Q6 = UniformData2D(1000,1000,5,15,25,35,10,20,30,40,r_seed)
-    PlotData(P6,Q6,fig_num,plotstyle='1d',save_fig='on')
-    c6_precision, c6_recall = PRCover(P6,Q6,k6)
-    density6, coverage6 = ComputeDC(P6,Q6,k6)
-    p6, r6 = ComputePR(P6,Q6,k6)
-    Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
-    PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
+    #1D uniform and overlapping dists, using sliding distributions 
+    a1_list = [10,10,10,10,10,8,6,4,2,0]
+    b1_list = [20,20,20,20,20,18,16,14,12,10]
+    a2_list = [0,2,4,8,10,10,10,10,10,10]
+    b2_list = [10,12,14,18,20,20,20,20,20,20] 
 
-    # Case 7, matching Gaussians
-    k7 = k
-    fig_num = 7
-    P7, Q7 = Gaussian2D(1000,1000,17,23,17,23,1,1,7)
-    PlotData(P7,Q7,fig_num,plotstyle='1d',save_fig='on')
-    c7_precision, c7_recall = PRCover(P7,Q7,k7)
-    density7, coverage7 = ComputeDC(P7,Q7,k7)
-    p7, r7 = ComputePR(P7,Q7,k7)
-    Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
-    PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
+    for i in range(len(a1_list)):
+        fig_num += 1
+        P, Q = DataSet.UniformData1D(n,m,a1_list[i],b1_list[i],a2_list[i],b2_list[i])
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,0,0,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 0,0,2,save_fig='on',quick_time='on')
 
-    # Case 8, 'disjoint' Gaussians
-    k8 = k
-    fig_num = 8
-    P8, Q8 = Gaussian2D(1000,1000,17,23,117,123,1,1,7)
-    PlotData(P8,Q8,fig_num,plotstyle='1d',save_fig='on')
-    c8_precision, c8_recall = PRCover(P8,Q8,k8)
-    density8, coverage8 = ComputeDC(P8,Q8,k8)
-    p8, r8 = ComputePR(P8,Q8,k8)
-    Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
-    PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
+    #2D uniform and matching dists
+    fig_num += 1 
+    P, Q = DataSet.UniformData2D(n,m,0,10,0,10,0,10,0,10)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,1,1,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 1,1,0,save_fig='on',quick_time='on')
 
-    # Case 9, 'overlapping' Gaussians
-    k9 = k
-    fig_num = 9
-    P9, Q9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
-    PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
-    c9_precision, c9_recall = PRCover(P9,Q9,k9)
-    density9, coverage9 = ComputeDC(P9,Q9,k9)
-    p9, r9 = ComputePR(P9,Q9,k9)
-    Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
-    PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
+    #2D uniform and disjoint dists
+    fig_num += 1 
+    P, Q = DataSet.UniformData2D(n,m,0,10,0,10,20,30,20,30)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,1,1,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 1,1,1,save_fig='on',quick_time='on')
 
-def Experiments2():
-# Set of experiments to be conducted swapped P and Q 
-    r_seed = 7
-    k = 3
+    #2D uniform and overlapping dists, using sliding distributions 
+    Px1_list = [0,0,0,0,0,2,4,6,8,10]
+    Px2_list = [10,10,10,10,10,12,14,16,18,20]
+    Py1_list = [0,0,0,0,0,2,4,6,8,10]
+    Py2_list = [10,10,10,10,10,12,14,16,18,20] 
     
-    #1D point generator 
-    #************************ 
-     
-    # Case 1, matching 1D dist
-    k1 = k
-    fig_num = 10
-    Q1,P1 = UniformData1D(1000,1000,0,10,0,10,r_seed)
-    PlotData(P1,Q1,fig_num, plotstyle='1d',save_fig = 'on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k1)
-    density1, coverage1 = ComputeDC(P1,Q1,k1)
-    p1, r1 = ComputePR(P1,Q1,k1)
-    Ip1, Ir1 = ComputeIPR(P1,Q1,k1)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    Qx1_list = [10,8,6,4,2,0,0,0,0,0]
+    Qx2_list = [20,18,16,14,12,10,10,10,10,10]
+    Qy1_list = [10,8,6,4,2,0,0,0,0,0]
+    Qy2_list = [20,18,16,14,12,10,10,10,10,10,10] 
 
-    # Case 2, disjoint 1D dist
-    k2 = k
-    fig_num = 11
-    Q2,P2 = UniformData1D(1000,1000,0,10,11,20,r_seed)
-    PlotData(P2,Q2,fig_num,plotstyle='1d',save_fig='on')
-    c2_precision, c2_recall = PRCover(P2,Q2,k2)
-    density2, coverage2 = ComputeDC(P2,Q2,k2)
-    p2, r2 = ComputePR(P2,Q2,k2)
-    Ip2, Ir2 = ComputeIPR(P2,Q2,k2)
-    PlotResults(p2,r2,Ip2,Ir2,density2,coverage2,c2_precision,c2_recall,fig_num,save_fig='on')
+    for i in range(len(Px1_list)):
+        fig_num += 1
+        P, Q = DataSet.UniformData2D(n,m,Px1_list[i],Px2_list[i],Py1_list[i],Py2_list[i],Qx1_list[i],Qx2_list[i],Qy1_list[i],Qy2_list[i])
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,1,1,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 1,1,2,save_fig='on',quick_time='on')
 
-    # Case 3, overlapping 1D dist
-    k3 = k
-    fig_num = 12
-    Q3,P3 = UniformData1D(1000,1000,0,10,5,15,r_seed)
-    PlotData(P3,Q3,fig_num,plotstyle='1d',save_fig='on')
-    c3_precision, c3_recall = PRCover(P3,Q3,k3)
-    density3, coverage3 = ComputeDC(P3,Q3,k3)
-    p3, r3 = ComputePR(P3,Q3,k3)
-    Ip3, Ir3 = ComputeIPR(P3,Q3,k3)
-    PlotResults(p3,r3,Ip3,Ir3,density3,coverage3,c3_precision,c3_recall,fig_num,save_fig='on')
+    #3D uniform and matching dists
+    fig_num += 1 
+    P, Q = DataSet.UniformData3D(n,m,0,10,0,10,0,10,0,10,0,10,0,10)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,2,2,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 2,2,0,save_fig='on',quick_time='on')
 
-    # 2D Uniform point generator
-    # *********************************
+    #3D uniform and disjoint dists
+    fig_num += 1 
+    P, Q = DataSet.UniformData3D(n,m,0,10,0,10,0,10,20,30,20,30,20,30)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,2,2,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 2,2,1,save_fig='on',quick_time='on')
 
-    # Case 4, matching 2D dist
-    k4 = k
-    fig_num = 13
-    Q4, P4 = UniformData2D(1000,1000,5,13,7,19,5,13,7,19,r_seed)
-    PlotData(P4,Q4,fig_num,plotstyle='1d',save_fig='on')
-    c4_precision, c4_recall = PRCover(P4,Q4,k4)
-    density4, coverage4 = ComputeDC(P4,Q4,k4)
-    p4, r4 = ComputePR(P4,Q4,k4)
-    Ip4, Ir4 = ComputeIPR(P4,Q4,k4)
-    PlotResults(p4,r4,Ip4,Ir4,density4,coverage4,c4_precision,c4_recall,fig_num,save_fig='on')
-
-    # Case 5, disjoint 2D dist
-    k5 = k
-    fig_num = 14
-    Q5, P5 = UniformData2D(1000,1000,5,7,13,19,23,29,37,49,r_seed)
-    PlotData(P5,Q5,fig_num,plotstyle='1d',save_fig='on')
-    c5_precision, c5_recall = PRCover(P5,Q5,k5)
-    density5, coverage5 = ComputeDC(P5,Q5,k5)
-    p5, r5 = ComputePR(P5,Q5,k5)
-    Ip5, Ir5 = ComputeIPR(P5,Q5,k5)
-    PlotResults(p5,r5,Ip5,Ir5,density5,coverage5,c5_precision,c5_recall,fig_num,save_fig='on')
-     
-    # Case 6, overlapping 2D dist
-    k6 = k
-    fig_num = 15
-    Q6, P6 = UniformData2D(1000,1000,5,15,25,35,10,20,30,40,r_seed)
-    PlotData(P6,Q6,fig_num,plotstyle='1d',save_fig='on')
-    c6_precision, c6_recall = PRCover(P6,Q6,k6)
-    density6, coverage6 = ComputeDC(P6,Q6,k6)
-    p6, r6 = ComputePR(P6,Q6,k6)
-    Ip6, Ir6 = ComputeIPR(P6,Q6,k6)
-    PlotResults(p6,r6,Ip6,Ir6,density6,coverage6,c6_precision,c6_recall,fig_num,save_fig='on')
-    # 2D Gaussian Generator
-    # *************************
-
-    # Case 7, matching Gaussians
-    k7 = k
-    fig_num = 16
-    Q7, P7 = Gaussian2D(1000,1000,17,23,17,23,1,1,7)
-    PlotData(P7,Q7,fig_num,plotstyle='1d',save_fig='on')
-    c7_precision, c7_recall = PRCover(P7,Q7,k7)
-    density7, coverage7 = ComputeDC(P7,Q7,k7)
-    p7, r7 = ComputePR(P7,Q7,k7)
-    Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
-    PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
-
-    # Case 8, 'disjoint' Gaussians
-    k8 = k
-    fig_num = 17
-    Q8, P8 = Gaussian2D(1000,1000,17,23,117,123,1,1,7)
-    PlotData(P8,Q8,fig_num,plotstyle='1d',save_fig='on')
-    c8_precision, c8_recall = PRCover(P8,Q8,k8)
-    density8, coverage8 = ComputeDC(P8,Q8,k8)
-    p8, r8 = ComputePR(P8,Q8,k8)
-    Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
-    PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
-
-    # Case 9, 'overlapping' Gaussians
-    k9 = k
-    fig_num = 18
-    Q9, P9 = Gaussian2D(1000,1000,20,20,21,21,1,1,7)
-    PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
-    c9_precision, c9_recall = PRCover(P9,Q9,k9)
-    density9, coverage9 = ComputeDC(P9,Q9,k9)
-    p9, r9 = ComputePR(P9,Q9,k9)
-    Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
-    PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
-
-def Experiments3():
-# Set of experiments to be conducted
-    r_seed = 7
-    k = 3
+    #3D uniform and overlapping dists, using sliding distributions 
+    Px1_list = [0,0,0,0,0,2,4,6,8,10]
+    Px2_list = [10,10,10,10,10,12,14,16,18,20]
+    Py1_list = [0,0,0,0,0,2,4,6,8,10]
+    Py2_list = [10,10,10,10,10,12,14,16,18,20] 
+    Pz1_list = [0,0,0,0,0,2,4,6,8,10]
+    Pz2_list = [10,10,10,10,10,12,14,16,18,20] 
     
-    # Case 7, matching Gaussians
-    k7 = k
-    fig_num = 19
-    P7, Q7 = Gaussian3D(1000,1000,17,23,29,17,23,29,1,1,7)
-    PlotData(P7,Q7,fig_num,plotstyle='1d',save_fig='on')
-    c7_precision, c7_recall = PRCover(P7,Q7,k7)
-    density7, coverage7 = ComputeDC(P7,Q7,k7)
-    p7, r7 = ComputePR(P7,Q7,k7)
-    Ip7, Ir7 = ComputeIPR(P7,Q7,k7)
-    PlotResults(p7,r7,Ip7,Ir7,density7,coverage7,c7_precision,c7_recall,fig_num,save_fig='on')
+    Qx1_list = [10,8,6,4,2,0,0,0,0,0]
+    Qx2_list = [20,18,16,14,12,10,10,10,10,10]
+    Qy1_list = [10,8,6,4,2,0,0,0,0,0]
+    Qy2_list = [20,18,16,14,12,10,10,10,10,10,10] 
+    Qz1_list = [10,8,6,4,2,0,0,0,0,0]
+    Qz2_list = [20,18,16,14,12,10,10,10,10,10,10] 
 
-    # Case 8, 'disjoint' Gaussians
-    k8 = k
-    fig_num = 20
-    P8, Q8 = Gaussian3D(1000,1000,17,23,29,117,123,129,1,1,7)
-    PlotData(P8,Q8,fig_num,plotstyle='1d',save_fig='on')
-    c8_precision, c8_recall = PRCover(P8,Q8,k8)
-    density8, coverage8 = ComputeDC(P8,Q8,k8)
-    p8, r8 = ComputePR(P8,Q8,k8)
-    Ip8, Ir8 = ComputeIPR(P8,Q8,k8)
-    PlotResults(p8,r8,Ip8,Ir8,density8,coverage8,c8_precision,c8_recall,fig_num,save_fig='on')
+    for i in range(len(Px1_list)):
+        fig_num += 1
+        P, Q = DataSet.UniformData3D(n,m,Px1_list[i],Px2_list[i],Py1_list[i],Py2_list[i],Pz1_list[i],Pz2_list[i],Qx1_list[i],Qx2_list[i],Qy1_list[i],Qy2_list[i],Qz1_list[i],Qz2_list[i])
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,2,2,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 2,2,2,save_fig='on',quick_time='on')
 
-    # Case 9, 'overlapping' Gaussians
-    k9 = k
-    fig_num = 21
-    P9, Q9 = Gaussian3D(1000,1000,20,20,20,21,21,21,1,1,7)
-    PlotData(P9,Q9,fig_num,plotstyle='1d',save_fig='on')
-    c9_precision, c9_recall = PRCover(P9,Q9,k9)
-    density9, coverage9 = ComputeDC(P9,Q9,k9)
-    p9, r9 = ComputePR(P9,Q9,k9)
-    Ip9, Ir9 = ComputeIPR(P9,Q9,k9)
-    PlotResults(p9,r9,Ip9,Ir9,density9,coverage9,c9_precision,c9_recall,fig_num,save_fig='on')
+    return fig_num
 
-def Experiments4():
-    # 3D Uniform Data + 3D Gaussian Data
-    k = 3
-    fig_num = 22
-    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
-    Q1_x, _ = UniformData1D(10000,1000,-1,1,-1,1,7)
-    Q1_y, _ = UniformData1D(10000,1000,-1,1,-1,1,8)
-    Q1_z, _ = UniformData1D(10000,1000,-1,1,-1,1,9)
-    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+def Experiment2(r_seed, fig_num, k, n, m):
+    '''
+    Various 2D Gaussian distributions  
+    '''
+    DataSet = DataGenerator(r_seed)
 
-def Experiments5():
-    # 3D Uniform Data + 3D Gaussian Data
-    k = 5
-    fig_num = 23
-    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
-    Q1_x, _ = UniformData1D(10000,1000,-1,1,-1,1,7)
-    Q1_y, _ = UniformData1D(10000,1000,-1,1,-1,1,8)
-    Q1_z, _ = UniformData1D(10000,1000,-1,1,-1,1,9)
-    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    #2D Gaussian and matching dists
+    fig_num += 1 
+    P, Q = DataSet.Gaussian2D(n,m,0,0,0,0,1,1)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,3,3,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 3, 3, 0,save_fig='on',quick_time='on')
 
-def Experiments6():
-    # 3D Uniform Data + 3D Gaussian Data
-    k = 10
-    fig_num = 24
-    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
-    Q1_x, _ = UniformData1D(10000,1000,-1,1,-1,1,7)
-    Q1_y, _ = UniformData1D(10000,1000,-1,1,-1,1,8)
-    Q1_z, _ = UniformData1D(10000,1000,-1,1,-1,1,9)
-    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    #2D Gaussian and disjoint dists
+    fig_num += 1 
+    P, Q = DataSet.Gaussian2D(n,m,0,0,10,10,1,1)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,3,3,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 3, 3, 1,save_fig='on',quick_time='on')
 
-def Experiments7():
-    # 3D Uniform Data + 3D Gaussian Data
-    k = 5
-    fig_num = 25
-    P1,   _ = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
-    Q1_x, _ = UniformData1D(1000,1000,-1,1,-1,1,7)
-    Q1_y, _ = UniformData1D(1000,1000,-1,1,-1,1,8)
-    Q1_z, _ = UniformData1D(1000,1000,-1,1,-1,1,9)
-    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    #2D Gaussian and overlapping dists with sliding dists
+    Px_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Py_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Qx_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+    Qy_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
 
-def Experiments8():
-    # 3D Uniform Data + 3D Gaussian Data
-    k = 5
-    fig_num = 26
-    P1,   _ = Gaussian3D(5000,1000,0,0,0,0,0,0,1,1,7)
-    Q1_x, _ = UniformData1D(1000,1000,-1,1,-1,1,7)
-    Q1_y, _ = UniformData1D(1000,1000,-1,1,-1,1,8)
-    Q1_z, _ = UniformData1D(1000,1000,-1,1,-1,1,9)
-    Q1 = np.hstack((Q1_x,Q1_y,Q1_z))
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    std_P = 1
+    std_Q = 1
 
-def Experiments9():
-    #Doughnut + 3D Gaussian
-    k = 3
-    fig_num = 27
-    P1, _   = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
-    _, Q1   = Doughnut(1000,1000,1,0.5,0,0,0,1,0.5,0,0,0,7)
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    for i in range(len(Px_list)):
+        fig_num += 1 
+        P, Q = DataSet.Gaussian2D(n,m,Px_list[i],Py_list[i],Qx_list[i],Qy_list[i],std_P,std_Q)
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,3,3,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 3, 3, 2,save_fig='on',quick_time='on')
 
-def Experiments10():
-    #Doughnut + 3D Gaussian
-    k = 3
-    fig_num = 28
-    P1, _   = Gaussian3D(2000,2000,0,0,0,0,0,0,1,1,7)
-    _, Q1   = Doughnut(2000,2000,5,1,0,0,0,5,1,0,0,0,7)
-    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
-    c1_precision, c1_recall = PRCover(P1,Q1,k)
-    density1, coverage1 = ComputeDC(P1,Q1,k)
-    p1,r1 = ComputePR(P1,Q1,k)
-    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
-    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+    return fig_num
+
+def Experiment3(r_seed, fig_num, k, n, m):
+    '''
+    Various 3D Gaussian distributions  
+    '''
+    DataSet = DataGenerator(r_seed)
+
+    #3D Gaussian and matching dists
+    fig_num += 1 
+    P, Q = DataSet.Gaussian3D(n,m,0,0,0,0,0,0,1,1)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,4,4,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 0,save_fig='on',quick_time='on')
+
+    #3D Gaussian and disjoint dists
+    fig_num += 1 
+    P, Q = DataSet.Gaussian3D(n,m,0,0,0,10,10,10,1,1)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,4,4,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 1,save_fig='on',quick_time='on')
+
+    #2D Gaussian and overlapping dists with sliding dists
+    Px_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Py_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Pz_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Qx_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+    Qy_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+    Qz_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+
+    std_P = 1
+    std_Q = 1
+
+    for i in range(len(Px_list)):
+        fig_num += 1 
+        P, Q = DataSet.Gaussian3D(n,m,Px_list[i],Py_list[i],Pz_list[i],Qx_list[i],Qy_list[i],Qz_list[i],std_P,std_Q)
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,4,4,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 2,save_fig='on',quick_time='on')
+
+    return fig_num 

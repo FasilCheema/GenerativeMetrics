@@ -194,23 +194,45 @@ class DataGenerator:
     
     def Rotate2D(self,data,theta,p_x,p_y):
         '''
-        Rotates 2 dimensional data by theta degrees CCW w.r.t. the x axis
+        Rotates 2 dimensional data by theta degrees CCW w.r.t. the x axis, also the center coords of 
+        the original object are needed so that the new object is rotated about the center of the original object
+        instead of also being translated.
         '''
-        translate_matrix = np.array((data[:,0]-p_x,data[:,1]-p_y))
+
+        #Extract the x and y coord
+        x = data[:,0]
+        y = data[:,1]
+        x = x.reshape(len(x),1)
+        y = y.reshape(len(y),1)
+
+        #In order for the object to be rotated about center we translate to origin
+        translate_matrix = np.hstack([x - p_x, y - p_y])
+
+        #Now create the 2D rotation matrix
         rotation_matrix = np.array(([cos(radians(theta)), - sin(radians(theta)) ], [sin(radians(theta)), cos(radians(theta))]))
 
+        #Obtain translated matrix about origin (and np gives transposed ans naturally)
         temp_matrix = np.matmul(rotation_matrix, np.transpose(translate_matrix))
-
         new_matrix = np.transpose(temp_matrix)
-        new_matrix = np.array((new_matrix[:,0]+p_x, new_matrix[:,1]+p_y))
+
+        #Extract new matrix's x and y components
+        new_x = new_matrix[:,0]
+        new_y = new_matrix[:,1]
+        new_x = new_x.reshape(len(new_x),1)
+        new_y = new_y.reshape(len(new_y),1)
+        
+        #Finally obtain the final result by translating back to the center of original object
+        new_matrix = np.hstack([new_x+p_x, new_y+p_y])
 
         return new_matrix
 
-    def Rotate3D(self, data, theta_x, theta_y, theta_z):
+    def Rotate3D(self, data, theta_x, theta_y, theta_z, p_x, p_y, p_z):
         '''
         Rotates 3 dimensional data by theta_p where p is the respective axis
         and theta is the amount of rotation in degrees counterclockwise from 
-        the respective axis. 
+        the respective axis. Also the coords of the center of the original 
+        object must be provided so that the rotation is about the center of the
+        original object and the not the origin, so there is no translation as well. 
         '''
 
         #Convert all angles to radians
@@ -218,17 +240,39 @@ class DataGenerator:
         theta_yr = radians(theta_y)
         theta_zr = radians(theta_z)
 
+        #Extract the x,y, and z coord
+        x = data[:,0]
+        y = data[:,1]
+        z = data[:,2]
+        x = x.reshape(len(x),1)
+        y = y.reshape(len(y),1)
+        z = z.reshape(len(z),1)
+
+        #In order for the object to be rotated about center we translate to origin
+        translate_matrix = np.hstack([x - p_x, y - p_y, z - p_z])
+        
         #Obtain each individual axis' rotation matrix
         R_x = np.array(([1,0,0],[0,cos(theta_xr),-sin(theta_xr)],[0,sin(theta_xr),cos(theta_xr)]))
         R_y = np.array(([cos(theta_yr),0,sin(theta_yr)],[0,1,0],[-sin(theta_yr),0,cos(theta_yr)]))
-        R_z = np.array(([cos(theta_zr),-sin(theta_zr,0)],[sin(theta_zr),cos(theta_zr),0],[0,0,1]))
+        R_z = np.array(([cos(theta_zr),-sin(theta_zr),0],[sin(theta_zr),cos(theta_zr),0],[0,0,1]))
+
 
         #Obtain total rotation matrix by definition R = RzRyRx
-        R = np.matmul(R_z,(np.matmul(R_y,R_x)))
+        R_matrix = np.matmul(R_z,(np.matmul(R_y,R_x)))
 
         #Finally rotate the chosen data
-        temp_matrix = np.matmul(R, np.transpose(data))
-
+        temp_matrix = np.matmul(R_matrix, np.transpose(translate_matrix))
         new_matrix = np.transpose(temp_matrix)
+        
+        #Extract new matrix's x and y components
+        new_x = new_matrix[:,0]
+        new_y = new_matrix[:,1]
+        new_z = new_matrix[:,2]
+        new_x = new_x.reshape(len(new_x),1)
+        new_y = new_y.reshape(len(new_y),1)
+        new_z = new_z.reshape(len(new_z),1)
+
+        #Combine the xyz components for final result        
+        new_matrix = np.hstack([new_x + p_x,new_y + p_y,new_z + p_z])
 
         return new_matrix
