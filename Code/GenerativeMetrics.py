@@ -431,28 +431,61 @@ def Gaussian3D(n,m, x_P, y_P, z_P, x_Q, y_Q, z_Q, std_P, std_Q, r_seed):
 
     return P, Q
 
-def Disc2D(n,m,P_r1,P_r2,Q_r1,Q_r2,r_seed):
+def Disc2D(n,m,P_r1,P_r2,P_xc,P_yc,Q_r1,Q_r2,Q_xc,Q_yc,r_seed):
     '''
     Takes the num samples for both real and gen distribution, where r1 and r2 are the respective start and end radii
-    of whichever distribution is being constructed. Points are generated uniformly between these 2 radii
+    of whichever distribution is being constructed. Points are generated uniformly between these 2 radii, also takes 
+    coordinates for center for each disc (P_xc,P_yc) is (x,y) center of disc P.
     '''
 
     np.random.seed(r_seed)
 
     P_r = np.random.uniform(P_r1,P_r2,(n,1))
-    P_Theta = np.random.uniform(0,2*pi,(n,1))
+    P_theta = np.random.uniform(0,2*pi,(n,1))
     
-    P_x = P_r * np.cos(P_Theta)
-    P_y = P_r * np.sin(P_Theta)
+    P_x = (P_r * np.cos(P_theta)) + P_xc
+    P_y = (P_r * np.sin(P_theta)) + P_yc
     
     Q_r = np.random.uniform(Q_r1,Q_r2,(m,1))
-    Q_Theta = np.random.uniform(0,2*pi,(m,1))
+    Q_theta = np.random.uniform(0,2*pi,(m,1))
     
-    Q_x = Q_r * np.cos(Q_Theta)
-    Q_y = Q_r * np.sin(Q_Theta)
+    Q_x = (Q_r * np.cos(Q_theta)) + Q_xc
+    Q_y = (Q_r * np.sin(Q_theta)) + Q_yc
 
     P = np.hstack([P_x,P_y])
     Q = np.hstack([Q_x,Q_y])
+
+    return P,Q
+
+def Doughnut(n,m,P_r1,P_r2,P_xc,P_yc,P_zc,Q_r1,Q_r2,Q_xc,Q_yc,Q_zc,r_seed):
+    '''
+    Takes the num samples for both real and gen dist respectively and creates a uniformly generated dist in the shape of a 
+    doughnut. Takes the r1 which is radius from center of donut (center of main hole) to center of 'tube' center. Then the 
+    'tube' is generated using r2, and of course the coordinates for the center of the doughnut are provided as well.
+    Also key to note this is a doughnut lying flat on the z-axis, for rotated doughnuts please apply a transformation function. 
+    '''
+
+    np.random.seed(r_seed)
+
+    #This radii is not the radius from the center of doughnut itself but radius from center of the 'tube'
+    P_r = np.random.uniform(0,P_r2,(n,1))
+    P_theta = np.random.uniform(0,2*pi,(n,1))
+    P_phi   = np.random.uniform(0,2*pi,(n,1))
+
+    P_x = (P_r1 + (P_r * np.cos(P_phi)))*np.cos(P_theta) + P_xc
+    P_y = (P_r1 + (P_r * np.cos(P_phi)))*np.sin(P_theta) + P_yc
+    P_z = (P_r * np.sin(P_phi)) + P_zc
+
+    Q_r = np.random.uniform(0,Q_r2,(m,1))
+    Q_theta = np.random.uniform(0,2*pi,(m,1))
+    Q_phi   = np.random.uniform(0,2*pi,(m,1))
+
+    Q_x = (Q_r1 + (Q_r * np.cos(Q_phi)))*np.cos(Q_theta) + Q_xc
+    Q_y = (Q_r1 + (Q_r * np.cos(Q_phi)))*np.sin(Q_theta) + Q_yc
+    Q_z = (Q_r * np.sin(Q_phi)) + Q_zc
+
+    P = np.hstack([P_x,P_y,P_z])
+    Q = np.hstack([Q_x,Q_y,Q_z])   
 
     return P,Q
 
@@ -792,6 +825,33 @@ def Experiments8():
     p1,r1 = ComputePR(P1,Q1,k)
     Ip1,Ir1 = ComputeIPR(P1,Q1,k)
     PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+def Experiments9():
+    #Doughnut + 3D Gaussian
+    k = 3
+    fig_num = 27
+    P1, _   = Gaussian3D(1000,1000,0,0,0,0,0,0,1,1,7)
+    _, Q1   = Doughnut(1000,1000,1,0.5,0,0,0,1,0.5,0,0,0,7)
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
+def Experiments10():
+    #Doughnut + 3D Gaussian
+    k = 3
+    fig_num = 28
+    P1, _   = Gaussian3D(2000,2000,0,0,0,0,0,0,1,1,7)
+    _, Q1   = Doughnut(2000,2000,5,1,0,0,0,5,1,0,0,0,7)
+    PlotData(P1,Q1,fig_num,plotstyle='1d',save_fig='on')
+    c1_precision, c1_recall = PRCover(P1,Q1,k)
+    density1, coverage1 = ComputeDC(P1,Q1,k)
+    p1,r1 = ComputePR(P1,Q1,k)
+    Ip1,Ir1 = ComputeIPR(P1,Q1,k)
+    PlotResults(p1,r1,Ip1,Ir1,density1,coverage1,c1_precision,c1_recall,fig_num,save_fig='on')
+
 def TestDataGenerator():
     x_vals = [-1,-1,-1,0,0,0,1,1,1]
     y_vals = [-1,0,1,-1,0,1,-1,0,1]
