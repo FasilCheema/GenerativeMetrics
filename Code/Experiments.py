@@ -243,3 +243,52 @@ def Experiment3(r_seed, fig_num, k, n, m):
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 2,save_fig='on',quick_time='on')
 
     return fig_num 
+
+def Experiment4(r_seed, fig_num, k, n, m):
+    '''
+    Various 2D and 3D spheres  
+    '''
+    DataSet = DataGenerator(r_seed)
+
+    #2D Discs and matching dists
+    fig_num += 1 
+    P, Q = DataSet.2D(n,m,0,0,0,0,0,0,1,1)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,4,4,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 0,save_fig='on',quick_time='on')
+
+    #3D Gaussian and disjoint dists
+    fig_num += 1 
+    P, Q = DataSet.Gaussian3D(n,m,0,0,0,10,10,10,1,1)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,4,4,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 1,save_fig='on',quick_time='on')
+
+    #2D Gaussian and overlapping dists with sliding dists
+    Px_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Py_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Pz_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
+    Qx_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+    Qy_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+    Qz_list = [2,1.6,1.2,0.8,0.4,0,0,0,0,0]
+
+    std_P = 1
+    std_Q = 1
+
+    for i in range(len(Px_list)):
+        fig_num += 1 
+        P, Q = DataSet.Gaussian3D(n,m,Px_list[i],Py_list[i],Pz_list[i],Qx_list[i],Qy_list[i],Qz_list[i],std_P,std_Q)
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,4,4,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 4, 4, 2,save_fig='on',quick_time='on')
+
+    return fig_num 
