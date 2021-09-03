@@ -35,6 +35,10 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
             #If in a hurry just saves plots without displaying
             if quick_time == 'off':
                 plt.show()
+            else:
+            #to save memory closes figures for mass deployment of figures
+                fig.clear()
+                plt.close(fig)
         else:
             # Code to do 3d histograms
             fig = plt.figure(figsize=(10,10))
@@ -74,6 +78,11 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
         #If in a hurry just saves plots without displaying
         if quick_time == 'off':
             plt.show()
+        else:
+            #to save memory closes figures for mass deployment of figures
+            fig.clear()
+            plt.close(fig)
+
     elif dim_P == 3:
         # assumes 3d plots
         P_x = P[:,0]
@@ -99,6 +108,10 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
         #If in a hurry just saves plots without displaying
         if quick_time == 'off':
             plt.show()
+        else:
+        #to save memory closes figures for mass deployment of figures
+            fig.clear()
+            plt.close(fig)
     else:
         print('Not plotting above 3 dimensions.')
 
@@ -131,3 +144,7 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
     #If in a hurry does not display plots just saves
     if quick_time == 'off':
         plt.show()
+    else:
+    #to save memory closes figures for mass deployment of figures
+        fig.clear()
+        plt.close(fig)
