@@ -10,45 +10,11 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    r_seed = 7 
-    k = 3
-    fig_num = 306
-    n = 1000
-    m = 3000
+    fig_num = 612
 
-    fig_num = Experiment1(r_seed,fig_num,k,n,m)
-    fig_num = Experiment2(r_seed,fig_num,k,n,m)
-    fig_num = Experiment3(r_seed,fig_num,k,n,m)
-    fig_num = Experiment4(r_seed,fig_num,k,n,m)
-    fig_num = Experiment5(r_seed,fig_num,k,n,m)
-    fig_num = Experiment6(r_seed,fig_num,k,n,m)
-    fig_num = Experiment7(r_seed,fig_num,k,n,m)
-    fig_num = Experiment8(r_seed,fig_num,k,n,m)
-    fig_num = Experiment9(r_seed,fig_num,k,n,m)
-    fig_num = Experiment10(r_seed,fig_num,k,n,m)
-    fig_num = Experiment11(r_seed,fig_num,k,n,m)
-    fig_num = Experiment12(r_seed,fig_num,k,n,m)
-    
-    #All experiments for reproducibility are intialized with the same random seed of 7
-    r_seed = 7 
-    k = 5
-    n = 1000
-    m = 1000
-
-    fig_num = Experiment1(r_seed,fig_num,k,n,m)
-    fig_num = Experiment2(r_seed,fig_num,k,n,m)
-    fig_num = Experiment3(r_seed,fig_num,k,n,m)
-    fig_num = Experiment4(r_seed,fig_num,k,n,m)
-    fig_num = Experiment5(r_seed,fig_num,k,n,m)
-    fig_num = Experiment6(r_seed,fig_num,k,n,m)
-    fig_num = Experiment7(r_seed,fig_num,k,n,m)
-    fig_num = Experiment8(r_seed,fig_num,k,n,m)
-    fig_num = Experiment9(r_seed,fig_num,k,n,m)
-    fig_num = Experiment10(r_seed,fig_num,k,n,m)
-    fig_num = Experiment11(r_seed,fig_num,k,n,m)
-    fig_num = Experiment12(r_seed,fig_num,k,n,m)
 
     #All experiments for reproducibility are intialized with the same random seed of 7
+    print(fig_num)
     r_seed = 7 
     k = 7
     n = 1000
@@ -68,6 +34,7 @@ def ExperimentQueue():
     fig_num = Experiment12(r_seed,fig_num,k,n,m)
     
     #All experiments for reproducibility are intialized with the same random seed of 7
+    print(fig_num)
     r_seed = 7 
     k = 10
     n = 1000
@@ -87,6 +54,7 @@ def ExperimentQueue():
     fig_num = Experiment12(r_seed,fig_num,k,n,m)
     
     #All experiments for reproducibility are intialized with the same random seed of 7
+    print(fig_num)
     r_seed = 7 
     k = 10
     n = 3000
@@ -703,3 +671,5 @@ def Experiment12(r_seed, fig_num, k, n, m):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, fig_num, 7, 6, 2,save_fig='on',quick_time='on')
+
+    return fig_num
