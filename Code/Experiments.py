@@ -16,9 +16,9 @@ def ExperimentQueue():
     #All experiments for reproducibility are intialized with the same random seed of 7
     print(fig_num)
     r_seed = 7 
-    k = 7
-    n = 1000
-    m = 1000
+    k = 25
+    n = 10000
+    m = 10000
 
     fig_num = Experiment1(r_seed,fig_num,k,n,m)
     fig_num = Experiment2(r_seed,fig_num,k,n,m)
