@@ -67,8 +67,8 @@ def PRCover(P,Q,k):
     num_P = P.shape[0]
     num_Q = Q.shape[0]
 
-    # C factor is simply an integer where k' = Ck 
-    C = 3
+    # C factor is simply an integer where k' = Ck (originally set to 3)
+    C = 9
 
     # Computes the NN of both P and Q
     nbrs_P = NearestNeighbors(n_neighbors=(C*k)+1, algorithm='kd_tree').fit(P)
@@ -90,7 +90,7 @@ def PRCover(P,Q,k):
 
     # Iterates through sample set P and checks if the number of set pts within the sample pt k-NN are above the desired number
     for i in range(num_P):
-        return_val = PR_Cover_Indicator(P[i],Q,dist_P[i])
+        return_val = PR_Cover_Indicator(P[i],Q,dist_P[i], C)
         if return_val == 1:
             p_sum += 1
 
