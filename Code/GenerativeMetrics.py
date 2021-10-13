@@ -66,10 +66,13 @@ def PRCover(P,Q,k):
     # Obtains the number of samples in both samples sets P and Q
     num_P = P.shape[0]
     num_Q = Q.shape[0]
-    
+
+    # C factor is simply an integer where k' = Ck 
+    C = 3
+
     # Computes the NN of both P and Q
-    nbrs_P = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(P)
-    nbrs_Q = NearestNeighbors(n_neighbors=(3*k)+1, algorithm='kd_tree').fit(Q)
+    nbrs_P = NearestNeighbors(n_neighbors=(C*k)+1, algorithm='kd_tree').fit(P)
+    nbrs_Q = NearestNeighbors(n_neighbors=(C*k)+1, algorithm='kd_tree').fit(Q)
 
     # Returns KNN distances and indices for each data sample
     dist_P, ind_P = nbrs_P.kneighbors(P)
@@ -96,7 +99,7 @@ def PRCover(P,Q,k):
 
     # Iterates through sample set Q and checks if the number of set pts within the sample pt k-NN are above the desired number
     for j in range(num_Q): 
-        return_val = PR_Cover_Indicator(Q[j],P,dist_Q[j])
+        return_val = PR_Cover_Indicator(Q[j],P,dist_Q[j], C)
         if return_val == 1:
             r_sum += 1
 
@@ -105,13 +108,13 @@ def PRCover(P,Q,k):
 
     return cover_precision, cover_recall
 
-def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set):
+def PR_Cover_Indicator(sample_pt, sample_set, k_nn_set, C):
     # Indicator function that checks if the number of pts from the set that lie within the k-NN ball of
-    # the input point exceeds the required number of neighbors (a third of the NN)
+    # the input point exceeds the required number of neighbors ( which is based off of the C factor k' = Ck)
 
     # Obtain important info such as choice of k, num_nbrs which is the min num of pts within a k-nn ball
     k = len(k_nn_set)
-    num_nbrs = k/3
+    num_nbrs = k/C
     num_pts  = sample_set.shape[0]
 
     # Initialize counter for num pts within k-nn ball 

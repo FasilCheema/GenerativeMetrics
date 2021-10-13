@@ -10,15 +10,15 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    fig_num = 1071
+    fig_num = 1224
 
 
     #All experiments for reproducibility are intialized with the same random seed of 7
     print(fig_num)
     r_seed = 7 
     k = 25
-    n = 10000
-    m = 10000
+    n = 3000
+    m = 30000
 
     fig_num = Experiment1(r_seed,fig_num,k,n,m)
     fig_num = Experiment2(r_seed,fig_num,k,n,m)
