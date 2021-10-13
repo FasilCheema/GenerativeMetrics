@@ -18,7 +18,7 @@ def ExperimentQueue():
     r_seed = 7 
     k = 25
     n = 3000
-    m = 30000
+    m = 3000
 
     fig_num = Experiment1(r_seed,fig_num,k,n,m)
     fig_num = Experiment2(r_seed,fig_num,k,n,m)
