@@ -115,7 +115,7 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
     else:
         print('Not plotting above 3 dimensions.')
 
-def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, k, fig_num, distP_val, distQ_val, overlap_val, save_fig ='off', quick_time='off'):
+def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, k, C, fig_num, distP_val, distQ_val, overlap_val, save_fig ='off', quick_time='off'):
 
     #Preformatting of text
     type_dist    = ['1D Uniform','2D Uniform','3D Uniform','2D Gaussian','3D Gaussian','2D Uniform Disc','Spherical','Doughnut']
@@ -135,7 +135,7 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
     ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
 
     #Shows what values of k are used
-    ax.text(0.05, -0.09, r"k = %d for D&C and Improved P&R and k' = %d, k = %d for Cover P&R" % (k,3*k,k), fontsize=14)
+    ax.text(0.05, -0.09, r"k = %d for D&C and Improved P&R and k' = %d, k = %d for Cover P&R" % (k,C*k,k), fontsize=14)
 
     #Saves an image of the plot in the appropriate directory with appropriate naming.
     if save_fig == 'on':

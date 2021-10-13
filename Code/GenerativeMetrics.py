@@ -60,7 +60,7 @@ def ComputePR(P,Q,k):
     
     return precision, recall
 
-def PRCover(P,Q,k):
+def PRCover(P,Q,k,C):
     # Computes the proposed cover precision and cover recall metrics
 
     # Obtains the number of samples in both samples sets P and Q
@@ -68,7 +68,7 @@ def PRCover(P,Q,k):
     num_Q = Q.shape[0]
 
     # C factor is simply an integer where k' = Ck (originally set to 3)
-    C = 9
+    #C = 9
 
     # Computes the NN of both P and Q
     nbrs_P = NearestNeighbors(n_neighbors=(C*k)+1, algorithm='kd_tree').fit(P)
