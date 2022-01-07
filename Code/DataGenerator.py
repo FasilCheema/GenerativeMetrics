@@ -59,6 +59,13 @@ class DataGenerator:
 
         return P, Q
 
+    def UniformChessBoard(self,n, m, x1, y1, a):
+        '''
+        Defines a chess board over an interval (a square) must provide starting x coord, and y coord then provide a length 
+        for the chess board to extend over. So x1_P is starting pt
+        '''
+        return P, Q 
+
     def Gaussian2D(self,n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q):
         '''
         Takes the num samples, mean (x,y coord separately) and std of each distribution (P and Q respectively)
