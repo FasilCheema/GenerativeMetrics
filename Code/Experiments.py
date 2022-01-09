@@ -10,29 +10,32 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    fig_num = 1224
+    fig_num = 1377
 
 
     #All experiments for reproducibility are intialized with the same random seed of 7
+    #k for k-nearest neighbors algorithms. n,m are true dist sample sizes and gen sample sizes respectively.
+    #C is a constant for setting an appropriate value of k' = Ck for the PR cover algorithm
     print(fig_num)
     r_seed = 7 
     k = 39
-    C = 9
+    C = 3
     n = 3000
     m = 3000
 
-    fig_num = Experiment1(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment2(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment3(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment4(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment5(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment6(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment7(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment8(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment9(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment10(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment11(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment12(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment1(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment2(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment3(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment4(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment5(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment6(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment7(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment8(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment9(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment10(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment11(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment12(r_seed,fig_num,k,n,m,C)
+    fig_num = Experiment13(r_seed,fig_num,k,n,m,C)
 
 def Experiment1(r_seed, fig_num, k, n, m, C):
     #First set of experiments will use the same k,n,m but just vary over the various uniform distributions
@@ -632,5 +635,31 @@ def Experiment12(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 6, 2,save_fig='on',quick_time='on')
+
+    return fig_num
+
+def Experiment13(r_seed, fig_num, k, n, m, C):
+    '''
+    Various Doughnuts rotated with other doughnuts  
+    '''
+    #Initialize DataGenerator clas with a random seed of our choosing for reproducibility
+    DataSet = DataGenerator(r_seed)
+
+    #Doughnut and Sphere overlapping with various rotations on the doughnut
+    rx_list = [0,0,45,0,45,45,45]
+    ry_list = [45,0,0,45,0,45,45]
+    rz_list = [0,45,0,45,45,0,45]
+
+    for i in range(len(rx_list)):
+        fig_num += 1 
+        P, _ = DataSet.Doughnut(n,0,5.500001,0.5,0,0,0,0,0,0,0,0)
+        _, Q = DataSet.Doughnut(0,m,0,0,0,0,0,4.5,0.5,0,0,0)
+        P = DataSet.Rotate3D(P,rx_list[i],ry_list[i],rz_list[i],0,0,0)
+        precision, recall = ComputePR(P,Q,k)
+        p_cover, r_cover  = PRCover(P,Q,k,C)
+        i_precision, i_recall = ComputeIPR(P,Q,k)
+        density, coverage = ComputeDC(P,Q,k)
+        PlotData(P,Q,fig_num,7,6,2,plotstyle='1d', save_fig='on',quick_time='on')
+        PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 7, 2,save_fig='on',quick_time='on')
 
     return fig_num

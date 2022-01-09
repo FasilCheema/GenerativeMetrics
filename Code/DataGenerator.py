@@ -61,9 +61,31 @@ class DataGenerator:
 
     def UniformChessBoard(self,n, m, x1, y1, a):
         '''
-        Defines a chess board over an interval (a square) must provide starting x coord, and y coord then provide a length 
-        for the chess board to extend over. So x1_P is starting pt
+        Defines a chess board over an interval (a square) must provide starting x coord, and y coord then provide a length
+        (parameter a) for the chess board to extend over. So x1_P is starting x coord, and y1_P is starting y coord 
+        (bottom right of board) for dist P.  
         '''
+        
+        np.random.seed(self.r_seed)
+
+        #computes relevant parameters for the board 
+        side_length = a/64
+        
+        #First create lists of which of the squares will have samples in them for each distribution
+        sq_list_P = np.random.randint(1,33,n)
+        sq_list_Q = np.random.randint(1,33,m)
+
+        #Create a list for where in any given square a random sample resides.  
+        P_x = np.random.rand(0,side_length,(n,1))
+        P_y = np.random.rand(0,side_length,(n,1))
+
+        Q_x = np.random.rand(0,side_length,(m,1))
+        Q_y = np.random.rand(0,side_length,(m,1))
+        
+        #
+
+        P = np.hstack([P_x, P_y])
+        Q = np.hstack([Q_x, Q_y])
         return P, Q 
 
     def Gaussian2D(self,n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q):
