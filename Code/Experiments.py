@@ -18,7 +18,7 @@ def ExperimentQueue():
     #C is a constant for setting an appropriate value of k' = Ck for the PR cover algorithm
     print(fig_num)
     r_seed = 7 
-    k = 39
+    k = 3
     C = 3
     n = 3000
     m = 3000

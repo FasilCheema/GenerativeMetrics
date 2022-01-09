@@ -88,8 +88,8 @@ class DataGenerator:
         t_Q = np.ceil(sq_list_Q/4)
 
         #swapping out 0 for 4, this is because the equation we use for mod gived 4n%4==0 but for our equation we need 4 not 0.
-        s_P = np.where(t_P < 1,4,t_P)
-        s_Q = np.where(t_Q < 1,4,t_Q)
+        s_P = np.where(s_P < 1,4,s_P)
+        s_Q = np.where(s_Q < 1,4,s_Q)
 
         #Initialize arrays where main data for x and y coords will be held  
         P_x = np.zeros((n,1))
@@ -121,11 +121,11 @@ class DataGenerator:
                 P_y[i,0] = y1 + (t_P[i,0]-1)*a
 
         for j in range(m):
-            if t_P[j,0] % 2 == 0:
-                Q_x[j,0] = x1 + (2*(s_Q[j,0])-1)*a
+            if t_Q[j,0] % 2 == 0:
+                Q_x[j,0] = x1 + (2*(s_Q[j,0])-2)*a
                 Q_y[j,0] = y1 + (t_Q[j,0]-1)*a
             else:
-                Q_x[j,0] = x1 + (2*(s_Q[j,0])-2)*a
+                Q_x[j,0] = x1 + (2*(s_Q[j,0])-1)*a
                 Q_y[j,0] = y1 + (t_Q[j,0]-1)*a
 
         rand_P_x = np.random.uniform(0,a,(n,1))
