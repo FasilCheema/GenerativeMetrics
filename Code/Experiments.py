@@ -35,7 +35,8 @@ def ExperimentQueue():
     #fig_num = Experiment10(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment11(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment12(r_seed,fig_num,k,n,m,C)
-    fig_num = Experiment13(r_seed,fig_num,k,n,m,C)
+    #fig_num = Experiment13(r_seed,fig_num,k,n,m,C)
+    fig_num = Experiment14(r_seed,fig_num,k,n,m,C)
 
 def Experiment1(r_seed, fig_num, k, n, m, C):
     #First set of experiments will use the same k,n,m but just vary over the various uniform distributions
@@ -661,5 +662,30 @@ def Experiment13(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 7, 2,save_fig='on',quick_time='on')
+
+    return fig_num
+
+def Experiment14(r_seed, fig_num, k, n, m, C):
+    '''
+    Metrics run on Uniform data in the shape of a chessboard 
+    '''
+
+    #Initialize DataGenerator clas with a random seed of our choosing for reproducibility
+    DataSet = DataGenerator(r_seed)
+
+    #Parameters of chess board, x1 is xcoord of relative origin of board, y1 is y coord, and a is length of each square
+    x1 = 0
+    y1 = 0
+    a  = 7
+
+    #2D uniform chessboard
+    fig_num += 1 
+    P, Q = DataSet.UniformChessBoard(n,m,x1,y1,a)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover  = PRCover(P,Q,k,C)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,1,1,1,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 1,1,1,save_fig='on',quick_time='on')
 
     return fig_num

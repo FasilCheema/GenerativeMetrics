@@ -62,30 +62,87 @@ class DataGenerator:
     def UniformChessBoard(self,n, m, x1, y1, a):
         '''
         Defines a chess board over an interval (a square) must provide starting x coord, and y coord then provide a length
-        (parameter a) for the chess board to extend over. So x1_P is starting x coord, and y1_P is starting y coord 
-        (bottom right of board) for dist P.  
+        for each square (parameter a) for the chess board to extend over. So x1_P is starting x coord, and y1_P is starting
+        y coord (bottom right of board) for dist P. Also it is standard to assume that P is black squares and Q white in this.  
         '''
         
         np.random.seed(self.r_seed)
 
-        #computes relevant parameters for the board 
-        side_length = a/64
+        '''
+        This section of the code will generate a random array of integers from 1 to 32 inclusive, this represents 
+        for each sample which of the 32 black (or white) squares will it be in. For instance for the array sq_list_P
+        if sq_list_P[4,0] == 32 (and P is black squares) this corresponds to the top right corner of the chess board, 
+        or the random point for the 5th element of the array lies within H8. 
+        '''
+
+        #First create lists of which squares will each random sample lie in for each distribution
+        sq_list_P = np.random.randint(1,33,(n,1))
+        sq_list_Q = np.random.randint(1,33,(m,1))
+
+        #Create a numpy array for the parameter s (s is used to define the x coordinate of the square it will reside in)
+        s_P = np.mod(sq_list_P,4)
+        s_Q = np.mod(sq_list_Q,4)
+
+        #Create a numpy array for the parameter t (t is used to define the y coordinate of the square it will reside in)
+        t_P = np.ceil(sq_list_P/4)
+        t_Q = np.ceil(sq_list_Q/4)
+
+        #swapping out 0 for 4, this is because the equation we use for mod gived 4n%4==0 but for our equation we need 4 not 0.
+        s_P = np.where(t_P < 1,4,t_P)
+        s_Q = np.where(t_Q < 1,4,t_Q)
+
+        #Initialize arrays where main data for x and y coords will be held  
+        P_x = np.zeros((n,1))
+        P_y = np.zeros((n,1))
+
+        Q_x = np.zeros((m,1))
+        Q_y = np.zeros((m,1))
         
-        #First create lists of which of the squares will have samples in them for each distribution
-        sq_list_P = np.random.randint(1,33,n)
-        sq_list_Q = np.random.randint(1,33,m)
+        '''
+        These loops work as follows:
+        we first check if t is odd, if it is this means the row starting from the left starts with a black square.
+        This in turn implies the equation for the x coord of the bottom right of the square we want will be x1 (parameter, relative origin)
+        plus (2s-2) times a lengths. The formal equation is x = x1 + (2s-2)*a and y is always y = y1 + (t-1)*a.
 
-        #Create a list for where in any given square a random sample resides.  
-        P_x = np.random.rand(0,side_length,(n,1))
-        P_y = np.random.rand(0,side_length,(n,1))
+        Now if t is even, if it is this means the row starting from the left starts with a white square.
+        This in turn implies the equation for the x coord of the bottom right of the square will be x1 (parameter, relative origin)
+        plus (2s-1) times a lengths. The formal equation is x = x1 + (2s-1)*a and y is always y = y1 + (t-1)*a. 
 
-        Q_x = np.random.rand(0,side_length,(m,1))
-        Q_y = np.random.rand(0,side_length,(m,1))
+        The difference of -1 vs -2 is simply a shifting of 1 square over depending on what square starts the row. Try some examples to understand
+        but this equation defines a set of colored squares given the number of the square from 1 to 32.
+        '''
         
-        #
+        for i in range(n):
+            if t_P[i,0] % 2 == 0:
+                P_x[i,0] = x1 + (2*(s_P[i,0])-1)*a
+                P_y[i,0] = y1 + (t_P[i,0]-1)*a
+            else:
+                P_x[i,0] = x1 + (2*(s_P[i,0])-2)*a
+                P_y[i,0] = y1 + (t_P[i,0]-1)*a
 
+        for j in range(m):
+            if t_P[j,0] % 2 == 0:
+                Q_x[j,0] = x1 + (2*(s_Q[j,0])-1)*a
+                Q_y[j,0] = y1 + (t_Q[j,0]-1)*a
+            else:
+                Q_x[j,0] = x1 + (2*(s_Q[j,0])-2)*a
+                Q_y[j,0] = y1 + (t_Q[j,0]-1)*a
+
+        rand_P_x = np.random.uniform(0,a,(n,1))
+        rand_P_y = np.random.uniform(0,a,(n,1))
+
+        rand_Q_x = np.random.uniform(0,a,(m,1))
+        rand_Q_y = np.random.uniform(0,a,(m,1))
+
+        P_x += rand_P_x
+        P_y += rand_P_y
+
+        Q_x += rand_Q_x
+        Q_y += rand_Q_y
+        
         P = np.hstack([P_x, P_y])
         Q = np.hstack([Q_x, Q_y])
+
         return P, Q 
 
     def Gaussian2D(self,n,m, x_P, y_P, x_Q, y_Q, std_P, std_Q):
