@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.patches import Rectangle, Circle
 
 def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', save_fig = 'off',quick_time='off'):
     # Takes the samples and plots them depending on the dimensionality
@@ -148,3 +150,38 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
     #to save memory closes figures for mass deployment of figures
         fig.clear()
         plt.close(fig)
+
+def Plot_Manifolds(P,Q,dist_P,dist_Q,ind_P,ind_Q,k,C):
+    #Define spheres by radii
+    #find k'-nn and use this
+    num_P = P.shape[0]
+    num_Q = Q.shape[0]
+
+    #Assumes dimension of P and Q are the same, so only 1 is needed
+    dim_P = P.shape[1]
+    dim_Q = Q.shape[1]
+
+    if (dim_P == 1) and (dim_Q == 1):
+        P_y = np.zeros((num_P,1))
+        Q_y = np.zeros((num_Q,1))
+
+        fig = plt.figure(figsize=(10,10))
+        ax  = fig.add_subplot()
+        ax.set_xlabel('value')
+        ax.set_ylabel('1-Dimensional Data')
+        ax.set_title('Histogram of P (true data) and Q (gen data) with PR Cover metric manifolds')
+    
+        ax.scatter(P,P_y, color ='blue')
+        ax.scatter(Q,Q_y, color ='red')
+
+        for i in range(num_P):
+        
+        #ax.add_patch(Rectangle(x,y),width,height, color='green',alpha=0.3)
+
+    elif (dim_P == 2) and (dim_Q == 2):
+        
+    elif (dim_P == 3) and (dim_Q == 3):
+
+    else:
+        print('Dimension Error')
+        
