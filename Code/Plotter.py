@@ -1,3 +1,5 @@
+#from turtle import color
+from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -151,7 +153,7 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
         fig.clear()
         plt.close(fig)
 
-def Plot_Manifolds(P,Q,dist_P,dist_Q,ind_P,ind_Q,k,C):
+def Plot_Manifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disjoint_P_knn, joint_supp_pts, joint_supp_knn, k,fig_num, plot_pts = False, save_fig = 'on'):
     #Define spheres by radii
     #find k'-nn and use this
     num_P = P.shape[0]
@@ -162,6 +164,78 @@ def Plot_Manifolds(P,Q,dist_P,dist_Q,ind_P,ind_Q,k,C):
     dim_Q = Q.shape[1]
 
     if (dim_P == 1) and (dim_Q == 1):
+        P_y = np.ones((num_P,1))
+        Q_y = np.ones((num_Q,1))
+
+        fig = plt.figure(figsize=(10,10))
+        ax  = fig.add_subplot()
+        ax.set_xlabel('value')
+        ax.set_ylabel('1-Dimensional Data')
+        ax.set_title('Histogram of P (true data) and Q (gen data) with PR Cover metric manifolds')
+        ax.set_ylim([-5, 5])
+
+        ax.scatter(P,P_y, color ='blue')
+        ax.scatter(Q,Q_y, color ='red')
+
+        for i in range(P_disjoint_Q_pts.shape[0]):
+            ax.add_patch(Rectangle((P_disjoint_Q_pts[i][0]-P_disjoint_Q_knn[i][0],-1),P_disjoint_Q_knn[i][0]*2,2,color='blue',alpha=0.1))
+            
+        for j in range(Q_disjoint_P_pts.shape[0]):
+            ax.add_patch(Rectangle((Q_disjoint_P_pts[j][0]-Q_disjoint_P_knn[j][0],-1),Q_disjoint_P_knn[j][0]*2,2,color='red',alpha=0.1))
+            
+        for k in range(joint_supp_pts.shape[0]):
+            ax.add_patch(Rectangle((joint_supp_pts[k][0]-joint_supp_knn[k][0],-1),joint_supp_knn[k][0]*2,2,color='green',alpha=0.1))
+        
+        leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
+        leg.legendHandles[0].set_color('blue')
+        leg.legendHandles[1].set_color('red')
+        leg.legendHandles[2].set_color('green')
+        leg.legendHandles[0].set_alpha(1)
+        leg.legendHandles[1].set_alpha(1)
+        leg.legendHandles[2].set_alpha(1)
+
+        if save_fig == 'on':
+            fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+
+        plt.show()
+    elif (dim_P == 2) and (dim_Q == 2):
+        P_x = P[:,0]
+        P_y = P[:,1]
+
+        Q_x = Q[:,0]
+        Q_y = Q[:,1]
+
+        fig = plt.figure(figsize=(10,10))
+        ax  = fig.add_subplot()
+        ax.set_xlabel('x-axis')
+        ax.set_ylabel('y-axis')
+        ax.set_title('Plot of P (true data) and Q (gen data) with PR Cover metric manifolds')
+        #ax.set_ylim([-5, 5])
+
+        ax.scatter(P_x,P_y, color ='blue')
+        ax.scatter(Q_x,Q_y, color ='red')
+
+        for i in range(P_disjoint_Q_pts.shape[0]):
+            ax.add_patch(Circle((P_disjoint_Q_pts[i][0]-P_disjoint_Q_knn[i][0],P_disjoint_Q_pts[i][1]-P_disjoint_Q_knn[i][0],),P_disjoint_Q_knn[i][0],color='blue',alpha=0.1))
+            
+        for j in range(Q_disjoint_P_pts.shape[0]):
+            ax.add_patch(Rectangle((Q_disjoint_P_pts[j][0]-Q_disjoint_P_knn[j][0],-1),Q_disjoint_P_knn[j][0]*2,2,color='red',alpha=0.1))
+        
+        for k in range(joint_supp_pts.shape[0]):
+            ax.add_patch(Rectangle((joint_supp_pts[k][0]-joint_supp_knn[k][0],-1),joint_supp_knn[k][0]*2,2,color='green',alpha=0.1))
+        
+        leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
+        leg.legendHandles[0].set_color('blue')
+        leg.legendHandles[1].set_color('red')
+        leg.legendHandles[2].set_color('green')
+        leg.legendHandles[0].set_alpha(1)
+        leg.legendHandles[1].set_alpha(1)
+        leg.legendHandles[2].set_alpha(1)
+
+        if save_fig == 'on':
+            fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+
+    elif (dim_P == 3) and (dim_Q == 3):
         P_y = np.zeros((num_P,1))
         Q_y = np.zeros((num_Q,1))
 
@@ -170,18 +244,30 @@ def Plot_Manifolds(P,Q,dist_P,dist_Q,ind_P,ind_Q,k,C):
         ax.set_xlabel('value')
         ax.set_ylabel('1-Dimensional Data')
         ax.set_title('Histogram of P (true data) and Q (gen data) with PR Cover metric manifolds')
-    
+        ax.set_ylim([-5, 5])
+
         ax.scatter(P,P_y, color ='blue')
         ax.scatter(Q,Q_y, color ='red')
 
-        for i in range(num_P):
+        for i in range(P_disjoint_Q_pts.shape[0]):
+            ax.add_patch(Rectangle((P_disjoint_Q_pts[i][0]-P_disjoint_Q_knn[i][0],-1),P_disjoint_Q_knn[i][0]*2,2,color='blue',alpha=0.1))
+            
+        for j in range(Q_disjoint_P_pts.shape[0]):
+            ax.add_patch(Rectangle((Q_disjoint_P_pts[j][0]-Q_disjoint_P_knn[j][0],-1),Q_disjoint_P_knn[j][0]*2,2,color='red',alpha=0.1))
+            
+        for k in range(joint_supp_pts.shape[0]):
+            ax.add_patch(Rectangle((joint_supp_pts[k][0]-joint_supp_knn[k][0],-1),joint_supp_knn[k][0]*2,2,color='green',alpha=0.1))
         
-        #ax.add_patch(Rectangle(x,y),width,height, color='green',alpha=0.3)
+        leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
+        leg.legendHandles[0].set_color('blue')
+        leg.legendHandles[1].set_color('red')
+        leg.legendHandles[2].set_color('green')
+        leg.legendHandles[0].set_alpha(1)
+        leg.legendHandles[1].set_alpha(1)
+        leg.legendHandles[2].set_alpha(1)
 
-    elif (dim_P == 2) and (dim_Q == 2):
-        
-    elif (dim_P == 3) and (dim_Q == 3):
-
+        if save_fig == 'on':
+            fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
     else:
         print('Dimension Error')
         
