@@ -242,7 +242,7 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
             ax.scatter(Q_x,Q_y, color ='red')
 
         #for each 2D point we add a patch that shows the 1D 'ball' or circle in this case that is the knn ball for each sample point
-        if int(P_disjoint_Q_pts) == int:
+        if type(P_disjoint_Q_pts) == int:
             print('no points for P that are disjoint from Q')
         else:            
             for i in range(P_disjoint_Q_pts.shape[0]):
