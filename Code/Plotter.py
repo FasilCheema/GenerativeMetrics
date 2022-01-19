@@ -34,7 +34,8 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
 
             # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
-                fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                #fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
 
             #If in a hurry just saves plots without displaying
             if quick_time == 'off':
@@ -58,7 +59,8 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
             
             # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
-                fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                #fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
 
     elif dim_P == 2:
         # assumes 2d plots
@@ -77,7 +79,8 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
         
         # Saves an image of the plot in the appropriate directory with appropriate naming.
         if save_fig == 'on':
-                fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                #fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
         
         #If in a hurry just saves plots without displaying
         if quick_time == 'off':
@@ -107,7 +110,8 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
         
         # Saves an image of the plot in the appropriate directory with appropriate naming.
         if save_fig == 'on':
-                fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                #fig.savefig("Experiments/InputData%d.png"%(fig_num))
+                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
         
         #If in a hurry just saves plots without displaying
         if quick_time == 'off':
@@ -143,7 +147,8 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
 
     #Saves an image of the plot in the appropriate directory with appropriate naming.
     if save_fig == 'on':
-        fig.savefig("Experiments/Results%d.png"%(fig_num))
+        #fig.savefig("Experiments/Results%d.png"%(fig_num))
+        fig.savefig("TestExperiments/Results%d.png"%(fig_num))
     
     #If in a hurry does not display plots just saves
     if quick_time == 'off':
@@ -182,14 +187,23 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
             ax.scatter(Q,Q_y, color ='red')
 
         #for each 1D point we add a patch that shows the 1D 'ball' or rectangle in this case that is the knn ball for each sample point
-        for i in range(P_disjoint_Q_pts.shape[0]):
-            ax.add_patch(Rectangle((P_disjoint_Q_pts[i][0]-P_disjoint_Q_knn[i][0],-1),P_disjoint_Q_knn[i][0]*2,2,color='blue',alpha=0.1))
-            
-        for j in range(Q_disjoint_P_pts.shape[0]):
-            ax.add_patch(Rectangle((Q_disjoint_P_pts[j][0]-Q_disjoint_P_knn[j][0],-1),Q_disjoint_P_knn[j][0]*2,2,color='red',alpha=0.1))
-            
-        for k in range(joint_supp_pts.shape[0]):
-            ax.add_patch(Rectangle((joint_supp_pts[k][0]-joint_supp_knn[k][0],-1),joint_supp_knn[k][0]*2,2,color='green',alpha=0.1))
+        if type(P_disjoint_Q_pts) == int:
+            print('no points for P that are disjoint from Q')
+        else:            
+            for i in range(P_disjoint_Q_pts.shape[0]):
+                ax.add_patch(Rectangle((P_disjoint_Q_pts[i][0]-P_disjoint_Q_knn[i][0],-1),P_disjoint_Q_knn[i][0]*2,2,color='blue',alpha=0.1))
+
+        if type(Q_disjoint_P_pts) == int:
+            print('no points for Q that are disjoint from P')
+        else:            
+            for j in range(Q_disjoint_P_pts.shape[0]):
+                ax.add_patch(Rectangle((Q_disjoint_P_pts[j][0]-Q_disjoint_P_knn[j][0],-1),Q_disjoint_P_knn[j][0]*2,2,color='red',alpha=0.1))
+
+        if type(joint_supp_pts) == int:
+            print('no joint support!')
+        else:
+            for k in range(joint_supp_pts.shape[0]):
+                ax.add_patch(Rectangle((joint_supp_pts[k][0]-joint_supp_knn[k][0],-1),joint_supp_knn[k][0]*2,2,color='green',alpha=0.1))
 
         #Adjusting legend settings 
         leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
@@ -202,7 +216,8 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
 
         #Checking if we are saving the figure 
         if save_fig == True:
-            fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+            #fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+            fig.savefig("TestExperiments/PRCover_Manifold%d.png"%(fig_num))
 
         #If in a rush we do not display the image
         if quick_time == False:
@@ -227,14 +242,23 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
             ax.scatter(Q_x,Q_y, color ='red')
 
         #for each 2D point we add a patch that shows the 1D 'ball' or circle in this case that is the knn ball for each sample point
-        for i in range(P_disjoint_Q_pts.shape[0]):
-            ax.add_patch(Circle((P_disjoint_Q_pts[i][0],P_disjoint_Q_pts[i][1]),radius = P_disjoint_Q_knn[i][0],color='blue',alpha=0.1))
+        if int(P_disjoint_Q_pts) == int:
+            print('no points for P that are disjoint from Q')
+        else:            
+            for i in range(P_disjoint_Q_pts.shape[0]):
+                ax.add_patch(Circle((P_disjoint_Q_pts[i][0],P_disjoint_Q_pts[i][1]),radius = P_disjoint_Q_knn[i][0],color='blue',alpha=0.1))
             
-        for j in range(Q_disjoint_P_pts.shape[0]):
-            ax.add_patch(Circle((Q_disjoint_P_pts[j][0],Q_disjoint_P_pts[j][1]),radius = Q_disjoint_P_knn[j][0],color='red',alpha=0.1))
+        if type(Q_disjoint_P_pts) == int:
+            print('no points for Q that are disjoint from P')
+        else:            
+            for j in range(Q_disjoint_P_pts.shape[0]):
+                ax.add_patch(Circle((Q_disjoint_P_pts[j][0],Q_disjoint_P_pts[j][1]),radius = Q_disjoint_P_knn[j][0],color='red',alpha=0.1))
         
-        for k in range(joint_supp_pts.shape[0]):
-            ax.add_patch(Circle((joint_supp_pts[k][0],joint_supp_pts[k][1]),radius = joint_supp_knn[k][0],color='green',alpha=0.1))
+        if type(joint_supp_pts) == int:
+            print('no joint support')
+        else:
+            for k in range(joint_supp_pts.shape[0]):
+                ax.add_patch(Circle((joint_supp_pts[k][0],joint_supp_pts[k][1]),radius = joint_supp_knn[k][0],color='green',alpha=0.1))
         
         #Adjusting legend settings 
         leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
@@ -247,7 +271,8 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
 
         #Checking if we are saving the figure 
         if save_fig == True:
-            fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+            #fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+            fig.savefig("TestExperiments/PRCover_Manifold%d.png"%(fig_num))
 
         #If in a rush we do not display the image
         if quick_time == False:
@@ -277,14 +302,23 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
             ax.scatter(Q_x,Q_y,Q_z, color ='red')
 
         #for each 3D point we add a patch that shows the 3D 'ball' or sphere in this case that is the knn ball for each sample point
-        for i in range(P_disjoint_Q_pts.shape[0]):
-            ax.plot_surface(P_disjoint_Q_knn[i][0] * np.outer(np.cos(u),np.sin(v)) + P_disjoint_Q_pts[i][0],P_disjoint_Q_knn[i][0] * np.outer(np.sin(u),np.sin(v)) + P_disjoint_Q_pts[i][1],P_disjoint_Q_knn[i][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + P_disjoint_Q_pts[i][2],color='blue',alpha=0.1)
+        if type(P_disjoint_Q_pts) == int:
+            print('no points for P that are disjoint from Q')
+        else:            
+            for i in range(P_disjoint_Q_pts.shape[0]):
+                ax.plot_surface(P_disjoint_Q_knn[i][0] * np.outer(np.cos(u),np.sin(v)) + P_disjoint_Q_pts[i][0],P_disjoint_Q_knn[i][0] * np.outer(np.sin(u),np.sin(v)) + P_disjoint_Q_pts[i][1],P_disjoint_Q_knn[i][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + P_disjoint_Q_pts[i][2],color='blue',alpha=0.1)
 
-        for j in range(Q_disjoint_P_pts.shape[0]):
-            ax.plot_surface(Q_disjoint_P_knn[j][0] * np.outer(np.cos(u),np.sin(v)) + Q_disjoint_P_pts[j][0],Q_disjoint_P_knn[j][0] * np.outer(np.sin(u),np.sin(v)) + Q_disjoint_P_pts[j][1],Q_disjoint_P_knn[j][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + Q_disjoint_P_pts[j][2],color='red',alpha=0.1)
-            
-        for k in range(joint_supp_pts.shape[0]):
-            ax.plot_surface(joint_supp_knn[k][0] * np.outer(np.cos(u),np.sin(v)) + joint_supp_pts[k][0],joint_supp_knn[k][0] * np.outer(np.sin(u),np.sin(v)) + joint_supp_pts[k][1],joint_supp_knn[k][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + joint_supp_pts[k][2],color='green',alpha=0.1)
+        if type(Q_disjoint_P_pts) == int:
+            print('no points for Q that are disjoint from P')
+        else:            
+            for j in range(Q_disjoint_P_pts.shape[0]):
+                ax.plot_surface(Q_disjoint_P_knn[j][0] * np.outer(np.cos(u),np.sin(v)) + Q_disjoint_P_pts[j][0],Q_disjoint_P_knn[j][0] * np.outer(np.sin(u),np.sin(v)) + Q_disjoint_P_pts[j][1],Q_disjoint_P_knn[j][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + Q_disjoint_P_pts[j][2],color='red',alpha=0.1)
+
+        if type(joint_supp_pts) == int:
+            print('no joint support!')
+        else:            
+            for k in range(joint_supp_pts.shape[0]):
+                ax.plot_surface(joint_supp_knn[k][0] * np.outer(np.cos(u),np.sin(v)) + joint_supp_pts[k][0],joint_supp_knn[k][0] * np.outer(np.sin(u),np.sin(v)) + joint_supp_pts[k][1],joint_supp_knn[k][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + joint_supp_pts[k][2],color='green',alpha=0.1)
         
         #leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
         #leg.legendHandles[0].set_color('blue')
@@ -296,7 +330,8 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
 
         #Checking if we are saving the figure 
         if save_fig == True:
-            fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+            #fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
+            fig.savefig("TestExperiments/PRCover_Manifold%d.png"%(fig_num))
     
         #If in a rush we do not display the image
         if quick_time == False: 
