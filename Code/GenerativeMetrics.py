@@ -60,7 +60,7 @@ def ComputePR(P,Q,k):
     
     return precision, recall
 
-def PRCover(P,Q,k,C, dist_P, dist_Q, ind_P, ind_Q):
+def PRCover(P,Q,k,C):
     # Computes the proposed cover precision and cover recall metrics
 
     # Obtains the number of samples in both samples sets P and Q
