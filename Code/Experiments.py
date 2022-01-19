@@ -52,7 +52,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,0,0,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 0,0,0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #1D uniform and disjoint dists
     fig_num += 1 
@@ -63,7 +63,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,0,0,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 0,0,1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #1D uniform and overlapping dists, using sliding distributions 
     a1_list = [10,10,10,10,10,8,6,4,2,0]
@@ -80,7 +80,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,0,0,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 0,0,2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D uniform and matching dists
     fig_num += 1 
@@ -91,7 +91,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,1,1,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 1,1,0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D uniform and disjoint dists
     fig_num += 1 
@@ -102,7 +102,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,1,1,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 1,1,1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D uniform and overlapping dists, using sliding distributions 
     Px1_list = [0,0,0,0,0,2,4,6,8,10]
@@ -124,7 +124,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,1,1,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 1,1,2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D uniform and matching dists
     fig_num += 1 
@@ -135,7 +135,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,2,2,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2,2,0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D uniform and disjoint dists
     fig_num += 1 
@@ -146,7 +146,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,2,2,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2,2,1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D uniform and overlapping dists, using sliding distributions 
     Px1_list = [0,0,0,0,0,2,4,6,8,10]
@@ -172,7 +172,7 @@ def Experiment1(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,2,2,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2,2,2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -191,7 +191,7 @@ def Experiment2(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,3,3,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 3, 3, 0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D Gaussian and disjoint dists
     fig_num += 1 
@@ -202,7 +202,7 @@ def Experiment2(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,3,3,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 3, 3, 1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D Gaussian and overlapping dists with sliding dists
     Px_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
@@ -222,7 +222,7 @@ def Experiment2(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,3,3,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 3, 3, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -241,7 +241,7 @@ def Experiment3(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,4,4,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 4, 4, 0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Gaussian and disjoint dists
     fig_num += 1 
@@ -252,7 +252,7 @@ def Experiment3(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,4,4,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 4, 4, 1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D Gaussian and overlapping dists with sliding dists
     Px_list = [0,0,0,0,0,0.4,0.8,1.2,1.6,2.0]
@@ -274,7 +274,7 @@ def Experiment3(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,4,4,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 4, 4, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -293,7 +293,7 @@ def Experiment4(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,5,5,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 5, 5, 0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D Discs and disjoint dists
     fig_num += 1 
@@ -304,7 +304,7 @@ def Experiment4(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,5,5,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 5, 5, 1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #2D Discs and overlapping dists with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -321,7 +321,7 @@ def Experiment4(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,5,5,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 5, 5, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -340,7 +340,7 @@ def Experiment5(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,6,6,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 6, 0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Spheres and disjoint dists
     fig_num += 1 
@@ -351,7 +351,7 @@ def Experiment5(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,6,6,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 6, 1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Spheres and overlapping dists with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -370,7 +370,7 @@ def Experiment5(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,6,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 6, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -389,7 +389,7 @@ def Experiment5(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,7,7,0,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 7, 0,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Doughnuts and disjoint dists
     fig_num += 1 
@@ -400,7 +400,7 @@ def Experiment5(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,7,7,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 7, 1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Doughnuts and overlapping dists with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -419,7 +419,7 @@ def Experiment5(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,7,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 7, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -439,7 +439,7 @@ def Experiment6(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,6,7,2,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 7, 2,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Sphere and Doughnut overlapping with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -459,7 +459,7 @@ def Experiment6(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,6,7,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 7, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -479,7 +479,7 @@ def Experiment7(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,6,4,2,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 4, 2,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Sphere and Doughnut overlapping with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -499,7 +499,7 @@ def Experiment7(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,6,4,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 6, 4, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -519,7 +519,7 @@ def Experiment8(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,7,4,2,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 4, 2,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Gaussian and Doughnut overlapping with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -539,7 +539,7 @@ def Experiment8(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,4,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 4, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -559,7 +559,7 @@ def Experiment9(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,2,4,2,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2, 4, 2,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Cube and Gaussians overlapping with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -579,7 +579,7 @@ def Experiment9(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,2,4,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2, 4, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num 
 
@@ -599,7 +599,7 @@ def Experiment10(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,2,6,2,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2, 6, 2,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     #3D Cube and Sphere overlapping with sliding dists
     Px_list = [0,0,0,0,0,2,4,6,8,10]
@@ -619,7 +619,7 @@ def Experiment10(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,2,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2, 6, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -645,7 +645,7 @@ def Experiment11(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,2,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 2, 6, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -671,7 +671,7 @@ def Experiment12(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 6, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -698,7 +698,7 @@ def Experiment13(r_seed, fig_num, k, n, m, C):
         density, coverage = ComputeDC(P,Q,k)
         PlotData(P,Q,fig_num,7,6,2,plotstyle='1d', save_fig='on',quick_time='on')
         PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 7, 7, 2,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
 
@@ -724,6 +724,6 @@ def Experiment14(r_seed, fig_num, k, n, m, C):
     density, coverage = ComputeDC(P,Q,k)
     PlotData(P,Q,fig_num,1,1,1,plotstyle='1d', save_fig='on',quick_time='on')
     PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 1,1,1,save_fig='on',quick_time='on')
-    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = False, save_fig = True,quick_time=True)
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
