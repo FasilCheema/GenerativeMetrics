@@ -222,6 +222,9 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         #If in a rush we do not display the image
         if quick_time == False:
             plt.show()
+        else:
+            fig.clear()
+            plt.close(fig)
 
     elif (dim_P == 2) and (dim_Q == 2):
         P_x = P[:,0]
@@ -230,11 +233,30 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         Q_x = Q[:,0]
         Q_y = Q[:,1]
 
+        min_Px = np.amin(P_x)
+        min_Py = np.amin(P_y)
+        min_Qx = np.amin(Q_x)
+        min_Qy = np.amin(Q_y)
+
+        max_Px = np.amax(P_x)
+        max_Py = np.amax(P_y)
+        max_Qx = np.amax(Q_x)
+        max_Qy = np.amax(Q_y)
+
+        min_x = np.minimum(min_Px,min_Qx)
+        min_y = np.minimum(min_Py,min_Qy)
+
+        max_x = np.maximum(max_Px,max_Qx)
+        max_y = np.maximum(max_Py,max_Qy)
+        
         fig = plt.figure(figsize=(10,10))
         ax  = fig.add_subplot()
         ax.set_xlabel('x-axis')
         ax.set_ylabel('y-axis')
         ax.set_title('Plot of P (true data) and Q (gen data) with PR Cover metric manifolds')
+        ax.set_xlim([min_x,max_x])
+        ax.set_ylim([min_y,max_y])
+
 
         #plot points from P and Q
         if plot_pts == True:
@@ -277,6 +299,9 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         #If in a rush we do not display the image
         if quick_time == False:
             plt.show()
+        else:   
+            fig.clear()
+            plt.close(fig)
     
     elif (dim_P == 3) and (dim_Q == 3):
         P_x = P[:,0]
@@ -286,6 +311,30 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         Q_x = Q[:,0]
         Q_y = Q[:,1]
         Q_z = Q[:,2]
+        
+        min_Px = np.amin(P_x)
+        min_Py = np.amin(P_y)
+        min_Pz = np.amin(P_z)
+        min_Qx = np.amin(Q_x)
+        min_Qy = np.amin(Q_y)
+        min_Qz = np.amin(Q_z)
+
+        max_Px = np.amax(P_x)
+        max_Py = np.amax(P_y)
+        max_Pz = np.amax(P_z)
+        max_Qx = np.amax(Q_x)
+        max_Qy = np.amax(Q_y)
+        max_Qz = np.amax(Q_z)
+
+        min_x = np.minimum(min_Px,min_Qx)
+        min_y = np.minimum(min_Py,min_Qy)
+        min_z = np.minimum(min_Pz,min_Qz)
+
+        max_x = np.maximum(max_Px,max_Qx)
+        max_y = np.maximum(max_Py,max_Qy)
+        max_z = np.maximum(max_Pz,max_Qz)
+        
+        fig = plt.figure(figsize=(10,10))
 
         u = np.linspace(0, 2 * np.pi, 100)
         v = np.linspace(0, np.pi, 100)
@@ -295,6 +344,9 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         ax.set_xlabel('x axis')
         ax.set_ylabel('y axis')
         ax.set_title('Plot of P (true data) and Q (gen data) with PR Cover metric manifolds')
+        ax.set_xlim([min_x,max_x])
+        ax.set_ylim([min_y,max_y])
+        ax.set_zlim([min_z,max_z])
 
         #plot points from P and Q
         if plot_pts == True:
@@ -316,9 +368,12 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
 
         if type(joint_supp_pts) == int:
             print('no joint support!')
-        else:            
+        else:           
             for k in range(joint_supp_pts.shape[0]):
-                ax.plot_surface(joint_supp_knn[k][0] * np.outer(np.cos(u),np.sin(v)) + joint_supp_pts[k][0],joint_supp_knn[k][0] * np.outer(np.sin(u),np.sin(v)) + joint_supp_pts[k][1],joint_supp_knn[k][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + joint_supp_pts[k][2],color='green',alpha=0.1)
+                if np.isscalar(joint_supp_knn) == True:    
+                    ax.plot_surface(joint_supp_knn * np.outer(np.cos(u),np.sin(v)) + joint_supp_pts[0],joint_supp_knn * np.outer(np.sin(u),np.sin(v)) + joint_supp_pts[1],joint_supp_knn * np.outer(np.ones(np.size(u)),np.cos(v)) + joint_supp_pts[2],color='green',alpha=0.1)
+                else:
+                    ax.plot_surface(joint_supp_knn[k][0] * np.outer(np.cos(u),np.sin(v)) + joint_supp_pts[k][0],joint_supp_knn[k][0] * np.outer(np.sin(u),np.sin(v)) + joint_supp_pts[k][1],joint_supp_knn[k][0] * np.outer(np.ones(np.size(u)),np.cos(v)) + joint_supp_pts[k][2],color='green',alpha=0.1)
         
         #leg = ax.legend(labels = ["Only P","Only Q","Joint support"])
         #leg.legendHandles[0].set_color('blue')
@@ -336,6 +391,9 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         #If in a rush we do not display the image
         if quick_time == False: 
             plt.show()
+        else:
+            fig.clear()
+            plt.close(fig)
     else:
         print('Dimension Error')
         
