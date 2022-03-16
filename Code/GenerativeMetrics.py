@@ -309,6 +309,22 @@ def ComputeDC(P,Q,k):
 
     return density, coverage
 
+def ComputeTruePR(P_coords,Q_coords,k):
+    '''
+    Computes the values of true precision and recall. These are made for uniform distributions
+    and are defined as the portion of support of P that Q encompasses and vice versa for recall. 
+    '''
+    #Assumes dimensionality of P and Q are the same
+    dim_P = P_coords.shape[1]
+
+    overlap_region_coords = np.zeros((1,dim_P)) 
+
+    for i in range(dim_P):
+        P_coords[0,i] - Q_coords[0,i]
+        np.max(0,)
+
+    return precision, recall
+
 if __name__ == "__main__":
     true_data, gen1_data, gen2_data, gen3_data, gen4_data, gen5_data = TestDataGenerator()
 

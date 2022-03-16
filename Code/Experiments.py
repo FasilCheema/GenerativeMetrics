@@ -727,3 +727,33 @@ def Experiment14(r_seed, fig_num, k, n, m, C):
     PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
 
     return fig_num
+
+def MetricComparisonExperiment1(r_seed, k, n, m, C,):
+    '''
+    Experiments to compare overlapping uniform distributions: 1 dimensional case and see metrics results vs true coverage
+    '''
+
+    #Initialize DataGenerator clas with a random seed of our choosing for reproducibility
+    DataSet = DataGenerator(r_seed)
+
+    fig_num += 1 
+
+    #Fix distribution P, and move Q realtive to P
+    x_p1 = 0
+    x_p2 = 10
+
+    #List of distribution Q's position 
+
+    P, Q = DataSet.UniformData1D(n,m,0,10,0,10)
+    precision, recall = ComputePR(P,Q,k)
+    p_cover, r_cover, P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k,C)
+    i_precision, i_recall = ComputeIPR(P,Q,k)
+    density, coverage = ComputeDC(P,Q,k)
+    PlotData(P,Q,fig_num,0,0,0,plotstyle='1d', save_fig='on',quick_time='on')
+    PlotResults(precision,recall,i_precision,i_recall,density, coverage, p_cover, r_cover, k, C, fig_num, 0,0,0,save_fig='on',quick_time='on')
+    PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
+
+    return fig_num 
+    
+
+
