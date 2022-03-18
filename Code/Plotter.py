@@ -158,6 +158,41 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
         fig.clear()
         plt.close(fig)
 
+def PlotMetricConvergence(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, k, C, fig_num, distP_val, distQ_val, overlap_val, save_fig ='off', quick_time='off'):
+
+    #Preformatting of text
+    type_dist    = ['1D Uniform','2D Uniform','3D Uniform','2D Gaussian','3D Gaussian','2D Uniform Disc','Spherical','Doughnut']
+    type_overlap = [' matching distributions',' disjoint distributions',' overlapping distributions'] 
+    
+    #Plots precision and recall
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.set(xlim=(0,1), ylim=(0,1))
+    ax.fill_between(recall, 0, precision, color='green')
+    ax.set_title('Precision and Recall of real '+type_dist[distP_val]+' and gen '+type_dist[distQ_val]+type_overlap[overlap_val])
+    ax.set_xlabel(r'Recall $ \beta $')
+    ax.set_ylabel(r'Precision $ \alpha $')
+
+    #Displays values of metric scores
+    ax.text(0.65, 1.09, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
+    ax.text(0.65, 1.05, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
+    ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
+
+    #Shows what values of k are used
+    ax.text(0.05, -0.09, r"k = %d for D&C and Improved P&R and k' = %d, k = %d for Cover P&R" % (k,C*k,k), fontsize=14)
+
+    #Saves an image of the plot in the appropriate directory with appropriate naming.
+    if save_fig == 'on':
+        #fig.savefig("Experiments/Results%d.png"%(fig_num))
+        fig.savefig("TestExperiments/Results%d.png"%(fig_num))
+    
+    #If in a hurry does not display plots just saves
+    if quick_time == 'off':
+        plt.show()
+    else:
+    #to save memory closes figures for mass deployment of figures
+        fig.clear()
+        plt.close(fig)
+
 def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disjoint_P_knn, joint_supp_pts, joint_supp_knn, k,fig_num, plot_pts = False, save_fig = True,quick_time=True):
     #Define spheres by radii
     #find k'-nn and use this

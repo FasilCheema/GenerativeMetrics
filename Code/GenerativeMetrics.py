@@ -4,6 +4,7 @@
              improved prevision and improved recall, and our proposed metric cover precision and cover recall. 
 '''
 
+from xml.etree.ElementPath import prepare_child
 import numpy as np
 from numpy.lib.npyio import save
 from pandas.core.indexing import convert_from_missing_indexer_tuple
@@ -309,7 +310,7 @@ def ComputeDC(P,Q,k):
 
     return density, coverage
 
-def ComputeTruePR(P_coords,Q_coords,k):
+def ComputeTruePR(P_coords,Q_coords):
     '''
     Computes the values of true precision and recall. These are made for uniform distributions
     and are defined as the portion of support of P that Q encompasses and vice versa for recall. 
@@ -317,12 +318,31 @@ def ComputeTruePR(P_coords,Q_coords,k):
     #Assumes dimensionality of P and Q are the same
     dim_P = P_coords.shape[1]
 
-    overlap_region_coords = np.zeros((1,dim_P)) 
+    overlap_region_coords = np.zeros((2,dim_P)) 
+    volume_overlap = 1
+    volume_P = 1
+    volume_Q = 1
 
     for i in range(dim_P):
-        P_coords[0,i] - Q_coords[0,i]
-        np.max(0,)
+        #Compute coordinates of overlapping region 
+        if Q_coords[0,i] < P_coords[1,i]:
+            overlap_region_coords[0,i] = Q_coords[0,i] 
+            overlap_region_coords[1,i] = P_coords[1,i]
+        elif P_coords[0,i] < Q_coords[1,i]:
+            overlap_region_coords[0,i] = P_coords[0,i] 
+            overlap_region_coords[1,i] = Q_coords[1,i]
+        else:
+            overlap_region_coords[0,i] = 0 
+            overlap_region_coords[1,i] = 0
 
+        #Compute volumes of three regions
+        volume_overlap *= (overlap_region_coords[1,i]-overlap_region_coords[0,i])
+        volume_P *= P_coords[1,i] - P_coords[0,i] 
+        volume_Q *= Q_coords[1,i] - Q_coords[0,i]
+    
+    precision = volume_overlap/volume_P 
+    recall = volume_overlap/volume_Q
+    
     return precision, recall
 
 if __name__ == "__main__":
