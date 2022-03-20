@@ -158,32 +158,99 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
         fig.clear()
         plt.close(fig)
 
-def PlotMetricConvergence(precision, recall, I_precision, I_recall, density, coverage, c_precision, c_recall, k, C, fig_num, distP_val, distQ_val, overlap_val, save_fig ='off', quick_time='off'):
+def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, dist_val, save_fig ='off', quick_time='off'):
+    '''
+    Plots a graph of metrics' performances w.r.t. increasing number of samples. 
+    Takes arrays of shape (num_samples,) for improved precision and recall, density and coverage, and PRCover. 
+    Creates a graph for precision vs num samples 
+    '''
 
     #Preformatting of text
-    type_dist    = ['1D Uniform','2D Uniform','3D Uniform','2D Gaussian','3D Gaussian','2D Uniform Disc','Spherical','Doughnut']
-    type_overlap = [' matching distributions',' disjoint distributions',' overlapping distributions'] 
-    
-    #Plots precision and recall
+    type_dist    = ['1D Uniform','2D Uniform','3D Uniform']
+    type_overlap = [' overlapping distributions'] 
+
+    #Create the x array for graphing (number of samples)
+    sample_array = np.linspace(10,num_samples,num_samples-10)
+
+    #Plots precision with respect to number of samples
     fig, ax = plt.subplots(figsize=(10,10))
-    ax.set(xlim=(0,1), ylim=(0,1))
-    ax.fill_between(recall, 0, precision, color='green')
-    ax.set_title('Precision and Recall of real '+type_dist[distP_val]+' and gen '+type_dist[distQ_val]+type_overlap[overlap_val])
-    ax.set_xlabel(r'Recall $ \beta $')
-    ax.set_ylabel(r'Precision $ \alpha $')
-
-    #Displays values of metric scores
-    ax.text(0.65, 1.09, r'Density = %4.2f , Coverage = %4.2f' % (density, coverage), fontsize=12)
-    ax.text(0.65, 1.05, r'I_precision = %4.2f , I_recall = %4.2f' % (I_precision, I_recall), fontsize=12)
-    ax.text(0.65, 1.13, r'C_precision = %4.2f , C_recall = %4.2f' % (c_precision, c_recall), fontsize=12)
-
-    #Shows what values of k are used
-    ax.text(0.05, -0.09, r"k = %d for D&C and Improved P&R and k' = %d, k = %d for Cover P&R" % (k,C*k,k), fontsize=14)
+    ax.set(ylim=(0,1))
+    ax.plot(sample_array,I_precision,color='red')
+    ax.plot(sample_array,density,color='green')
+    ax.plot(sample_array,c_precision,color='blue')
+    ax.set_title('Precision scores on '+type_dist[dist_val]+' real and gen '+type_overlap[0]+' with varying # of samples')
+    ax.set_xlabel(' number of samples')
+    ax.set_ylabel('Precision')
+    
+    # specifying horizontal line type
+    plt.axhline(y = true_precision, color = 'orange', linestyle = '--')
+    
+    #formatting legend
+    leg = ax.legend(labels = ["Improved precision","density","cover precision","true precision"], loc='best')
+    leg.legendHandles[0].set_color('red')
+    leg.legendHandles[1].set_color('blue')
+    leg.legendHandles[2].set_color('green')
+    leg.legendHandles[3].set_color('orange')
+    leg.legendHandles[0].set_alpha(1)
+    leg.legendHandles[1].set_alpha(1)
+    leg.legendHandles[2].set_alpha(1)
+    leg.legendHandles[3].set_alpha(1)
 
     #Saves an image of the plot in the appropriate directory with appropriate naming.
     if save_fig == 'on':
-        #fig.savefig("Experiments/Results%d.png"%(fig_num))
-        fig.savefig("TestExperiments/Results%d.png"%(fig_num))
+        fig.savefig("TestExperiments/PrecisionConvergence%d.png"%(fig_num))
+    
+    #If in a hurry does not display plots just saves
+    if quick_time == 'off':
+        plt.show()
+    else:
+    #to save memory closes figures for mass deployment of figures
+        fig.clear()
+        plt.close(fig)
+
+def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, dist_val, save_fig ='off', quick_time='off'):
+    '''
+    Plots a graph of metrics' performances w.r.t. increasing number of samples. 
+    Takes arrays of shape (num_samples,) for improved precision and recall, density and coverage, and PRCover. 
+    Creates a graph for recall vs num samples
+    '''
+
+    #Preformatting of text
+    type_dist    = ['1D Uniform','2D Uniform','3D Uniform']
+    type_overlap = [' overlapping distributions'] 
+
+    #Create the x array for graphing (number of samples)
+    sample_array = np.linspace(1,num_samples,num_samples-10)
+
+    #Plots precision with respect to number of samples
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.set(ylim=(0,1))
+    ax.plot(sample_array,I_recall,color='red')
+    ax.plot(sample_array,coverage,color='green')
+    ax.plot(sample_array,c_recall,color='blue')
+
+    # specifying horizontal line type
+    plt.axhline(y = true_recall, color = 'orange', linestyle = '--')
+    
+    #formatting legend
+    leg = ax.legend(labels = ["Improved recall","coverage","cover recall","true recall"],loc = 'best')
+    leg.legendHandles[0].set_color('red')
+    leg.legendHandles[1].set_color('blue')
+    leg.legendHandles[2].set_color('green')
+    leg.legendHandles[3].set_color('orange')
+    leg.legendHandles[0].set_alpha(1)
+    leg.legendHandles[1].set_alpha(1)
+    leg.legendHandles[2].set_alpha(1)
+    leg.legendHandles[3].set_alpha(1)
+
+
+    ax.set_title('Recall scores on '+type_dist[dist_val]+' real and gen '+type_overlap[0]+' with varying # of samples')
+    ax.set_xlabel(' number of samples')
+    ax.set_ylabel('Recall')
+
+    #Saves an image of the plot in the appropriate directory with appropriate naming.
+    if save_fig == 'on':
+        fig.savefig("TestExperiments/RecallConvergence%d.png"%(fig_num))
     
     #If in a hurry does not display plots just saves
     if quick_time == 'off':
