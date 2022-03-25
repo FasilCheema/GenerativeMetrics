@@ -11,7 +11,7 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    fig_num = 0
+    fig_num = 26
 
 
     #All experiments for reproducibility are intialized with the same random seed of 7
@@ -19,12 +19,12 @@ def ExperimentQueue():
     #C is a constant for setting an appropriate value of k' = Ck for the PR cover algorithm
     print(fig_num)
     r_seed = 7 
-    k = 3
+    k = 3 
     C = 3
     n = 1500
     m = 1500
 
-    num_samples = 100
+    num_samples = 1000
 
     #fig_num = Experiment1(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment2(r_seed,fig_num,k,n,m,C)
@@ -748,6 +748,9 @@ def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
     num_clusters = 20
     C = 3
 
+    #Constant for choice of k (see thoery approx ln(8/delta))
+    C_0 = 6
+    
     #Fix distribution P, and move Q relative to P
     p_x1 = 0
     p_x2 = 10
@@ -773,13 +776,16 @@ def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
             #compute k 
             n = j + 10
             m = n
-            k = math.log(n)
+            k = math.log(n) + C_0
             k = int(k+1)
 
             P, Q = DataSet.UniformData1D(n,m,p_x1,p_x2,q_x1[i],q_x2[i])
-        
+
+            #to ensure same choice of k for all         
+            k_p = int(k/C)
+
             #compute measures
-            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k,C)
+            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
             I_precision[j-10], I_recall[j-10] = ComputeIPR(P,Q,k)
             density[j-10], coverage[j-10] = ComputeDC(P,Q,k)
 
@@ -822,6 +828,9 @@ def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num):
     num_clusters = 20
     C = 3
 
+    #Constant for choice of k (see thoery approx ln(8/delta))
+    C_0 = 6
+
     #Fix distribution P, and move Q relative to P
     p_x1 = 0
     p_x2 = 10
@@ -851,13 +860,16 @@ def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num):
             #compute k 
             n = j + 10
             m = n
-            k = math.log(n)
+            k = math.log(n) + C_0
             k = int(k+1)
 
             P, Q = DataSet.UniformData2D(n,m,p_x1,p_x2,p_y1,p_y2,q_x1[i],q_x2[i],q_y1[i],q_y2[i])
         
+            #to ensure same choice of k for all         
+            k_p = int(k/C)
+            
             #compute measures
-            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k,C)
+            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
             I_precision[j-10], I_recall[j-10] = ComputeIPR(P,Q,k)
             density[j-10], coverage[j-10] = ComputeDC(P,Q,k)
 
@@ -899,6 +911,9 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
     #initializing properties for the measures
     num_clusters = 20
     C = 3
+    
+    #Constant for choice of k (see thoery approx ln(8/delta))
+    C_0 = 6
 
     #Fix distribution P, and move Q relative to P
     p_x1 = 0
@@ -933,13 +948,16 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
             #compute k 
             n = j + 10
             m = n
-            k = math.log(n)
+            k = math.log(n) + C_0
             k = int(k+1)
 
             P, Q = DataSet.UniformData3D(n,m,p_x1,p_x2,p_y1,p_y2,p_z1,p_z2,q_x1[i],q_x2[i],q_y1[i],q_y2[i],q_z1[i],q_z2[i])
         
+            #to ensure same choice of k for all         
+            k_p = int(k/C)
+            
             #compute measures
-            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k,C)
+            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
             I_precision[j-10], I_recall[j-10] = ComputeIPR(P,Q,k)
             density[j-10], coverage[j-10] = ComputeDC(P,Q,k)
 

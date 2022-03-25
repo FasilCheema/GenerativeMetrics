@@ -35,7 +35,7 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
             # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
                 #fig.savefig("Experiments/InputData%d.png"%(fig_num))
-                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
+                fig.savefig("ConvergenceExperiments/InputData%d.png"%(fig_num))
 
             #If in a hurry just saves plots without displaying
             if quick_time == 'off':
@@ -60,7 +60,7 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
             # Saves an image of the plot in the appropriate directory with appropriate naming.
             if save_fig == 'on':
                 #fig.savefig("Experiments/InputData%d.png"%(fig_num))
-                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
+                fig.savefig("ConvergenceExperiments/InputData%d.png"%(fig_num))
 
     elif dim_P == 2:
         # assumes 2d plots
@@ -80,7 +80,7 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
         # Saves an image of the plot in the appropriate directory with appropriate naming.
         if save_fig == 'on':
                 #fig.savefig("Experiments/InputData%d.png"%(fig_num))
-                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
+                fig.savefig("ConvergenceExperiments/InputData%d.png"%(fig_num))
         
         #If in a hurry just saves plots without displaying
         if quick_time == 'off':
@@ -111,7 +111,7 @@ def PlotData(P,Q, fig_num, distP_val, distQ_val, overlap_val, plotstyle = '1d', 
         # Saves an image of the plot in the appropriate directory with appropriate naming.
         if save_fig == 'on':
                 #fig.savefig("Experiments/InputData%d.png"%(fig_num))
-                fig.savefig("TestExperiments/InputData%d.png"%(fig_num))
+                fig.savefig("ConvergenceExperiments/InputData%d.png"%(fig_num))
         
         #If in a hurry just saves plots without displaying
         if quick_time == 'off':
@@ -148,7 +148,7 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
     #Saves an image of the plot in the appropriate directory with appropriate naming.
     if save_fig == 'on':
         #fig.savefig("Experiments/Results%d.png"%(fig_num))
-        fig.savefig("TestExperiments/Results%d.png"%(fig_num))
+        fig.savefig("ConvergenceExperiments/Results%d.png"%(fig_num))
     
     #If in a hurry does not display plots just saves
     if quick_time == 'off':
@@ -198,7 +198,7 @@ def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c
 
     #Saves an image of the plot in the appropriate directory with appropriate naming.
     if save_fig == 'on':
-        fig.savefig("TestExperiments/PrecisionConvergence%d.png"%(fig_num))
+        fig.savefig("ConvergenceExperiments/PrecisionConvergence%d.png"%(fig_num))
     
     #If in a hurry does not display plots just saves
     if quick_time == 'off':
@@ -250,7 +250,7 @@ def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall,
 
     #Saves an image of the plot in the appropriate directory with appropriate naming.
     if save_fig == 'on':
-        fig.savefig("TestExperiments/RecallConvergence%d.png"%(fig_num))
+        fig.savefig("ConvergenceExperiments/RecallConvergence%d.png"%(fig_num))
     
     #If in a hurry does not display plots just saves
     if quick_time == 'off':
@@ -290,13 +290,13 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
 
         #for each 1D point we add a patch that shows the 1D 'ball' or rectangle in this case that is the knn ball for each sample point
         if type(P_disjoint_Q_pts) == int:
-            print('no points for P that are disjoint from Q')
+            print('no points for P that are disjoint from Q') #no regions for only P points
         else:            
             for i in range(P_disjoint_Q_pts.shape[0]):
                 ax.add_patch(Rectangle((P_disjoint_Q_pts[i][0]-P_disjoint_Q_knn[i][0],-1),P_disjoint_Q_knn[i][0]*2,2,color='blue',alpha=0.1))
 
         if type(Q_disjoint_P_pts) == int:
-            print('no points for Q that are disjoint from P')
+            print('no points for Q that are disjoint from P') #no regions for only Q points
         else:            
             for j in range(Q_disjoint_P_pts.shape[0]):
                 ax.add_patch(Rectangle((Q_disjoint_P_pts[j][0]-Q_disjoint_P_knn[j][0],-1),Q_disjoint_P_knn[j][0]*2,2,color='red',alpha=0.1))
@@ -319,7 +319,7 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         #Checking if we are saving the figure 
         if save_fig == True:
             #fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
-            fig.savefig("TestExperiments/PRCover_Manifold%d.png"%(fig_num))
+            fig.savefig("ConvergenceExperiments/PRCover_Manifold%d.png"%(fig_num))
 
         #If in a rush we do not display the image
         if quick_time == False:
@@ -396,7 +396,7 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         #Checking if we are saving the figure 
         if save_fig == True:
             #fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
-            fig.savefig("TestExperiments/PRCover_Manifold%d.png"%(fig_num))
+            fig.savefig("ConvergenceExperiments/PRCover_Manifold%d.png"%(fig_num))
 
         #If in a rush we do not display the image
         if quick_time == False:
@@ -488,7 +488,7 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
         #Checking if we are saving the figure 
         if save_fig == True:
             #fig.savefig("Experiments/PRCover_Manifold%d.png"%(fig_num))
-            fig.savefig("TestExperiments/PRCover_Manifold%d.png"%(fig_num))
+            fig.savefig("ConvergenceExperiments/PRCover_Manifold%d.png"%(fig_num))
     
         #If in a rush we do not display the image
         if quick_time == False: 
