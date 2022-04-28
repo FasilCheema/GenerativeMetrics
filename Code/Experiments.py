@@ -1,3 +1,4 @@
+from tracemalloc import start
 from matplotlib.pyplot import figimage
 from scipy.sparse import data
 from DataGenerator import DataGenerator
@@ -11,7 +12,7 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    fig_num = 26
+    fig_num = 49
 
 
     #All experiments for reproducibility are intialized with the same random seed of 7
@@ -23,6 +24,12 @@ def ExperimentQueue():
     C = 3
     n = 1500
     m = 1500
+    
+    #Constant for choice of k (see theory approx ln(8/delta))
+    C_0 = 6
+
+    #For convergence experiments due to C_0 causing a base value for k, we need to start at a number of samples > k. Adjust accordingly to C_0
+    start_val = 15
 
     num_samples = 1000
 
@@ -40,9 +47,9 @@ def ExperimentQueue():
     #fig_num = Experiment12(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment13(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment14(r_seed,fig_num,k,n,m,C)
-    fig_num = MeasureConvergenceExperiment1(r_seed,num_samples,fig_num)
-    fig_num = MeasureConvergenceExperiment2(r_seed,num_samples,fig_num)
-    fig_num = MeasureConvergenceExperiment3(r_seed,num_samples,fig_num)
+    fig_num = MeasureConvergenceExperiment1(r_seed,num_samples,fig_num,C,C_0, start_val)
+    fig_num = MeasureConvergenceExperiment2(r_seed,num_samples,fig_num,C,C_0, start_val)
+    fig_num = MeasureConvergenceExperiment3(r_seed,num_samples,fig_num,C,C_0, start_val)
 
 def Experiment1(r_seed, fig_num, k, n, m, C):
     #First set of experiments will use the same k,n,m but just vary over the various uniform distributions
@@ -734,7 +741,7 @@ def Experiment14(r_seed, fig_num, k, n, m, C):
 
     return fig_num
 
-def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
+def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num, C, C_0, start_val):
     '''
     Experiments to compare overlapping uniform distributions: 1 dimensional case and see metrics results vs true coverage
     '''
@@ -746,10 +753,6 @@ def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
 
     #initializing properties for the measures
     num_clusters = 20
-    C = 3
-
-    #Constant for choice of k (see thoery approx ln(8/delta))
-    C_0 = 6
     
     #Fix distribution P, and move Q relative to P
     p_x1 = 0
@@ -762,19 +765,19 @@ def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
     num_experiments = len(q_x1)
 
     #initialize arrays for measures
-    I_precision = np.zeros(num_samples-10)
-    I_recall = np.zeros(num_samples-10)
-    c_precision = np.zeros(num_samples-10)
-    c_recall = np.zeros(num_samples-10)
-    density = np.zeros(num_samples-10)
-    coverage = np.zeros(num_samples-10)
+    I_precision = np.zeros(num_samples-start_val)
+    I_recall = np.zeros(num_samples-start_val)
+    c_precision = np.zeros(num_samples-start_val)
+    c_recall = np.zeros(num_samples-start_val)
+    density = np.zeros(num_samples-start_val)
+    coverage = np.zeros(num_samples-start_val)
 
     #List of distribution Q's position 
     for i in range(num_experiments):
-        for j in range(num_samples-10):
+        for j in range(num_samples-start_val):
 
             #compute k 
-            n = j + 10
+            n = j + start_val
             m = n
             k = math.log(n) + C_0
             k = int(k+1)
@@ -782,20 +785,20 @@ def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
             P, Q = DataSet.UniformData1D(n,m,p_x1,p_x2,q_x1[i],q_x2[i])
 
             #to ensure same choice of k for all         
-            k_p = int(k/C)
+            k_p = int(k/C+1)
 
             #compute measures
-            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
-            I_precision[j-10], I_recall[j-10] = ComputeIPR(P,Q,k)
-            density[j-10], coverage[j-10] = ComputeDC(P,Q,k)
+            c_precision[j], c_recall[j], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
+            I_precision[j], I_recall[j] = ComputeIPR(P,Q,k)
+            density[j], coverage[j] = ComputeDC(P,Q,k)
 
         #Compute the generative measures' values with maximum number of samples 
-        I_precision_max = I_precision[num_samples-11]
-        I_recall_max = I_recall[num_samples-11] 
-        density_max = density[num_samples-11]
-        coverage_max = coverage[num_samples-11]
-        c_precision_max = c_precision[num_samples-11]
-        c_recall_max = c_recall[num_samples-11]
+        I_precision_max = I_precision[num_samples-start_val-1]
+        I_recall_max = I_recall[num_samples-start_val-1] 
+        density_max = density[num_samples-start_val-1]
+        coverage_max = coverage[num_samples-start_val-1]
+        c_precision_max = c_precision[num_samples-start_val-1]
+        c_recall_max = c_recall[num_samples-start_val-1]
         precision, recall = ComputePR(P,Q,num_clusters)
 
         Q_coords = np.array(([[q_x1[i]],[q_x2[i]]]))
@@ -808,28 +811,24 @@ def MeasureConvergenceExperiment1(r_seed, num_samples, fig_num):
         PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
         
         #Plot precision and recall measures as a function of number of samples 
-        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 0, save_fig='on',quick_time='on')
-        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 0, save_fig='on',quick_time='on')
+        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 0, start_val, save_fig='on',quick_time='on')
+        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 0, start_val, save_fig='on',quick_time='on')
         fig_num += 1
 
     return fig_num 
     
-def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num):
+def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num, C, C_0, start_val):
     '''
-    Experiments to compare overlapping uniform distributions: 1 dimensional case and see metrics results vs true coverage
+    Experiments to compare overlapping uniform distributions: 2 dimensional case and see metrics results vs true coverage
     '''
 
-    #Initialize DataGenerator clas with a random seed of our choosing for reproducibility
+    #Initialize DataGenerator class with a random seed of our choosing for reproducibility
     DataSet = DataGenerator(r_seed)
 
     fig_num += 1 
 
     #initializing properties for the measures
     num_clusters = 20
-    C = 3
-
-    #Constant for choice of k (see thoery approx ln(8/delta))
-    C_0 = 6
 
     #Fix distribution P, and move Q relative to P
     p_x1 = 0
@@ -846,19 +845,19 @@ def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num):
     num_experiments = len(q_x1)
 
     #initialize arrays for measures
-    I_precision = np.zeros(num_samples-10)
-    I_recall = np.zeros(num_samples-10)
-    c_precision = np.zeros(num_samples-10)
-    c_recall = np.zeros(num_samples-10)
-    density = np.zeros(num_samples-10)
-    coverage = np.zeros(num_samples-10)
+    I_precision = np.zeros(num_samples-start_val)
+    I_recall = np.zeros(num_samples-start_val)
+    c_precision = np.zeros(num_samples-start_val)
+    c_recall = np.zeros(num_samples-start_val)
+    density = np.zeros(num_samples-start_val)
+    coverage = np.zeros(num_samples-start_val)
 
     #List of distribution Q's position 
     for i in range(num_experiments):
-        for j in range(num_samples-10):
+        for j in range(num_samples-start_val):
 
             #compute k 
-            n = j + 10
+            n = j + start_val
             m = n
             k = math.log(n) + C_0
             k = int(k+1)
@@ -866,20 +865,20 @@ def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num):
             P, Q = DataSet.UniformData2D(n,m,p_x1,p_x2,p_y1,p_y2,q_x1[i],q_x2[i],q_y1[i],q_y2[i])
         
             #to ensure same choice of k for all         
-            k_p = int(k/C)
+            k_p = int(k/C+1)
             
             #compute measures
-            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
-            I_precision[j-10], I_recall[j-10] = ComputeIPR(P,Q,k)
-            density[j-10], coverage[j-10] = ComputeDC(P,Q,k)
+            c_precision[j], c_recall[j], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
+            I_precision[j], I_recall[j] = ComputeIPR(P,Q,k)
+            density[j], coverage[j] = ComputeDC(P,Q,k)
 
         #Compute the generative measures' values with maximum number of samples 
-        I_precision_max = I_precision[num_samples-11]
-        I_recall_max = I_recall[num_samples-11] 
-        density_max = density[num_samples-11]
-        coverage_max = coverage[num_samples-11]
-        c_precision_max = c_precision[num_samples-11]
-        c_recall_max = c_recall[num_samples-11]
+        I_precision_max = I_precision[num_samples-start_val-1]
+        I_recall_max = I_recall[num_samples-start_val-1] 
+        density_max = density[num_samples-start_val-1]
+        coverage_max = coverage[num_samples-start_val-1]
+        c_precision_max = c_precision[num_samples-start_val-1]
+        c_recall_max = c_recall[num_samples-start_val-1]
         precision, recall = ComputePR(P,Q,num_clusters)
 
         Q_coords = np.array(([[q_x1[i],q_y1[i]],[q_x2[i],q_y2[i]]]))
@@ -892,15 +891,15 @@ def MeasureConvergenceExperiment2(r_seed, num_samples, fig_num):
         PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
         
         #Plot precision and recall measures as a function of number of samples 
-        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 1, save_fig='on',quick_time='on')
-        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 1, save_fig='on',quick_time='on')
+        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 1, start_val, save_fig='on',quick_time='on')
+        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 1,start_val, save_fig='on',quick_time='on')
         fig_num += 1
 
     return fig_num 
     
-def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
+def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num,C,C_0, start_val):
     '''
-    Experiments to compare overlapping uniform distributions: 1 dimensional case and see metrics results vs true coverage
+    Experiments to compare overlapping uniform distributions: 3 dimensional case and see metrics results vs true coverage
     '''
 
     #Initialize DataGenerator clas with a random seed of our choosing for reproducibility
@@ -910,11 +909,7 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
 
     #initializing properties for the measures
     num_clusters = 20
-    C = 3
     
-    #Constant for choice of k (see thoery approx ln(8/delta))
-    C_0 = 6
-
     #Fix distribution P, and move Q relative to P
     p_x1 = 0
     p_x2 = 10
@@ -934,19 +929,19 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
     num_experiments = len(q_x1)
 
     #initialize arrays for measures
-    I_precision = np.zeros(num_samples-10)
-    I_recall = np.zeros(num_samples-10)
-    c_precision = np.zeros(num_samples-10)
-    c_recall = np.zeros(num_samples-10)
-    density = np.zeros(num_samples-10)
-    coverage = np.zeros(num_samples-10)
+    I_precision = np.zeros(num_samples-start_val)
+    I_recall = np.zeros(num_samples-start_val)
+    c_precision = np.zeros(num_samples-start_val)
+    c_recall = np.zeros(num_samples-start_val)
+    density = np.zeros(num_samples-start_val)
+    coverage = np.zeros(num_samples-start_val)
 
     #List of distribution Q's position 
     for i in range(num_experiments):
-        for j in range(num_samples-10):
+        for j in range(num_samples-start_val):
 
             #compute k 
-            n = j + 10
+            n = j + start_val
             m = n
             k = math.log(n) + C_0
             k = int(k+1)
@@ -954,20 +949,20 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
             P, Q = DataSet.UniformData3D(n,m,p_x1,p_x2,p_y1,p_y2,p_z1,p_z2,q_x1[i],q_x2[i],q_y1[i],q_y2[i],q_z1[i],q_z2[i])
         
             #to ensure same choice of k for all         
-            k_p = int(k/C)
+            k_p = int(k/C+1)
             
             #compute measures
-            c_precision[j-10], c_recall[j-10], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
-            I_precision[j-10], I_recall[j-10] = ComputeIPR(P,Q,k)
-            density[j-10], coverage[j-10] = ComputeDC(P,Q,k)
+            c_precision[j], c_recall[j], P_nQ_pts, P_nQ_knn, Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn  = PRCover(P,Q,k_p,C)
+            I_precision[j], I_recall[j] = ComputeIPR(P,Q,k)
+            density[j], coverage[j] = ComputeDC(P,Q,k)
 
         #Compute the generative measures' values with maximum number of samples 
-        I_precision_max = I_precision[num_samples-11]
-        I_recall_max = I_recall[num_samples-11] 
-        density_max = density[num_samples-11]
-        coverage_max = coverage[num_samples-11]
-        c_precision_max = c_precision[num_samples-11]
-        c_recall_max = c_recall[num_samples-11]
+        I_precision_max = I_precision[num_samples-start_val-1]
+        I_recall_max = I_recall[num_samples-start_val-1] 
+        density_max = density[num_samples-start_val-1]
+        coverage_max = coverage[num_samples-start_val-1]
+        c_precision_max = c_precision[num_samples-start_val-1]
+        c_recall_max = c_recall[num_samples-start_val-1]
         precision, recall = ComputePR(P,Q,num_clusters)
 
         Q_coords = np.array(([[q_x1[i],q_y1[i],q_z1[i]],[q_x2[i],q_y2[i],q_z2[i]]]))
@@ -980,8 +975,8 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num):
         PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
         
         #Plot precision and recall measures as a function of number of samples 
-        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 2, save_fig='on',quick_time='on')
-        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 2, save_fig='on',quick_time='on')
+        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 2, start_val, save_fig='on',quick_time='on')
+        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 2, start_val, save_fig='on',quick_time='on')
         fig_num += 1
 
     return fig_num 

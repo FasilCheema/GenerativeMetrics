@@ -158,7 +158,7 @@ def PlotResults(precision, recall, I_precision, I_recall, density, coverage, c_p
         fig.clear()
         plt.close(fig)
 
-def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, dist_val, save_fig ='off', quick_time='off'):
+def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, dist_val, start_val, save_fig ='off', quick_time='off'):
     '''
     Plots a graph of metrics' performances w.r.t. increasing number of samples. 
     Takes arrays of shape (num_samples,) for improved precision and recall, density and coverage, and PRCover. 
@@ -170,14 +170,14 @@ def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c
     type_overlap = [' overlapping distributions'] 
 
     #Create the x array for graphing (number of samples)
-    sample_array = np.linspace(10,num_samples,num_samples-10)
+    sample_array = np.linspace(start_val,num_samples,num_samples-start_val)
 
     #Plots precision with respect to number of samples
     fig, ax = plt.subplots(figsize=(10,10))
     ax.set(ylim=(0,1))
     ax.plot(sample_array,I_precision,color='red')
-    ax.plot(sample_array,density,color='green')
-    ax.plot(sample_array,c_precision,color='blue')
+    ax.plot(sample_array,density,color='blue')
+    ax.plot(sample_array,c_precision,color='green')
     ax.set_title('Precision scores on '+type_dist[dist_val]+' real and gen '+type_overlap[0]+' with varying # of samples')
     ax.set_xlabel(' number of samples')
     ax.set_ylabel('Precision')
@@ -208,7 +208,7 @@ def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c
         fig.clear()
         plt.close(fig)
 
-def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, dist_val, save_fig ='off', quick_time='off'):
+def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, dist_val, start_val, save_fig ='off', quick_time='off'):
     '''
     Plots a graph of metrics' performances w.r.t. increasing number of samples. 
     Takes arrays of shape (num_samples,) for improved precision and recall, density and coverage, and PRCover. 
@@ -220,14 +220,14 @@ def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall,
     type_overlap = [' overlapping distributions'] 
 
     #Create the x array for graphing (number of samples)
-    sample_array = np.linspace(1,num_samples,num_samples-10)
+    sample_array = np.linspace(start_val,num_samples,num_samples-start_val)
 
     #Plots precision with respect to number of samples
     fig, ax = plt.subplots(figsize=(10,10))
     ax.set(ylim=(0,1))
     ax.plot(sample_array,I_recall,color='red')
-    ax.plot(sample_array,coverage,color='green')
-    ax.plot(sample_array,c_recall,color='blue')
+    ax.plot(sample_array,coverage,color='blue')
+    ax.plot(sample_array,c_recall,color='green')
 
     # specifying horizontal line type
     plt.axhline(y = true_recall, color = 'orange', linestyle = '--')
