@@ -41,7 +41,7 @@ class DataGenerator:
 
     def UniformData3D(self,n, m, x1_P, x2_P, y1_P, y2_P, z1_P, z2_P, x1_Q, x2_Q, y1_Q, y2_Q, z1_Q, z2_Q):
         '''
-        Takes values of endpoints to define 2 rectangular prisms (for P and Q) a uniform distribution is then sampled
+        Takes values of endpoints to define 2 rectangular d-dimensional prisms (for P and Q) a uniform distribution is then sampled
         over respective x,y,z axes and then concatenated. Also takes how many number of samples there are for each sample set.
         '''
         np.random.seed(self.r_seed)
@@ -59,6 +59,27 @@ class DataGenerator:
 
         return P, Q
 
+    def UniformPrismD(self,n, m, init_P, term_P, init_Q, term_Q, dimension):
+        '''
+        Takes values of endpoints to define 2 rectangular prisms (for P and Q) a uniform distribution is then sampled
+        over respective x,y,z axes and then concatenated. Also takes how many number of samples there are for each sample set.
+        '''
+        np.random.seed(self.r_seed)
+
+        P = np.random.uniform(init_P, term_P, (n,1))
+
+        for i in range(1, dimension):
+            temp_vec_P = np.random.uniform(init_P, term_P, (n,1))
+            P = np.hstack([P, temp_vec_P])
+
+        Q = np.random.uniform(init_Q, term_Q, (m,1))
+
+        for j in range(1, dimension):
+            temp_vec_Q = np.random.uniform(init_Q, term_Q, (m,1))
+            Q = np.hstack([Q, temp_vec_Q])
+        
+        return P, Q
+    
     def UniformChessBoard(self,n, m, x1, y1, a):
         '''
         Defines a chess board over an interval (a square) must provide starting x coord, and y coord then provide a length
