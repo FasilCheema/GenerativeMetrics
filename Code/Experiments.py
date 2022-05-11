@@ -13,7 +13,7 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    fig_num = 49
+    fig_num = 72
 
 
     #All experiments for reproducibility are intialized with the same random seed of 7
@@ -48,9 +48,19 @@ def ExperimentQueue():
     #fig_num = Experiment12(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment13(r_seed,fig_num,k,n,m,C)
     #fig_num = Experiment14(r_seed,fig_num,k,n,m,C)
-    fig_num = MeasureConvergenceExperiment1(r_seed,num_samples,fig_num,C,C_0, start_val)
-    fig_num = MeasureConvergenceExperiment2(r_seed,num_samples,fig_num,C,C_0, start_val)
-    fig_num = MeasureConvergenceExperiment3(r_seed,num_samples,fig_num,C,C_0, start_val)
+    #fig_num = MeasureConvergenceExperiment1(r_seed,num_samples,fig_num,C,C_0, start_val)
+    #fig_num = MeasureConvergenceExperiment2(r_seed,num_samples,fig_num,C,C_0, start_val)
+    #fig_num = MeasureConvergenceExperiment3(r_seed,num_samples,fig_num,C,C_0, start_val)
+    fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,4)
+    print('finished 4d experiments')
+    fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,5)
+    print('finished 5d experiments')
+    fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,6)
+    print('finished 6d experiments')
+    fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,7)
+    print('finished 7d experiments')
+    fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,8)
+    print('finished 8d experiments')
 
 def Experiment1(r_seed, fig_num, k, n, m, C):
     #First set of experiments will use the same k,n,m but just vary over the various uniform distributions
