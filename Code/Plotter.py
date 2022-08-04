@@ -166,7 +166,7 @@ def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c
     '''
 
     #Preformatting of text
-    type_dist    = ['1D Uniform','2D Uniform','3D Uniform']
+    type_dist    = ['1D Uniform','2D Uniform','3D Uniform','4D Uniform','5D Uniform','6D Uniform','7D Uniform','8D Uniform']
     type_overlap = [' overlapping distributions'] 
 
     #Create the x array for graphing (number of samples)
@@ -183,7 +183,7 @@ def PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c
     ax.set_ylabel('Precision')
     
     # specifying horizontal line type
-    plt.axhline(y = true_precision, color = 'orange', linestyle = '--')
+    plt.axhline(y = true_precision, color = 'black', linestyle = '--')
     
     #formatting legend
     leg = ax.legend(labels = ["Improved precision","density","cover precision","true precision"], loc='best')
@@ -216,7 +216,7 @@ def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall,
     '''
 
     #Preformatting of text
-    type_dist    = ['1D Uniform','2D Uniform','3D Uniform']
+    type_dist    = ['1D Uniform','2D Uniform','3D Uniform','4D Uniform','5D Uniform','6D Uniform','7D Uniform','8D Uniform']
     type_overlap = [' overlapping distributions'] 
 
     #Create the x array for graphing (number of samples)
@@ -230,7 +230,7 @@ def PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall,
     ax.plot(sample_array,c_recall,color='green')
 
     # specifying horizontal line type
-    plt.axhline(y = true_recall, color = 'orange', linestyle = '--')
+    plt.axhline(y = true_recall, color = 'black', linestyle = '--')
     
     #formatting legend
     leg = ax.legend(labels = ["Improved recall","coverage","cover recall","true recall"],loc = 'best')

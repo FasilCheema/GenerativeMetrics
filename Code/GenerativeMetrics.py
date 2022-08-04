@@ -313,7 +313,7 @@ def ComputeDC(P,Q,k):
 def ComputeTruePR(P_coords,Q_coords):
     '''
     Computes the values of true precision and recall. These are made for uniform distributions
-    and are defined as the portion of support of P that Q encompasses and vice versa for recall. 
+    and are defined as the portion of support of Q that P encompasses and vice versa for recall. 
     '''
     #Assumes dimensionality of P and Q are the same
     dim_P = P_coords.shape[1]
@@ -340,8 +340,8 @@ def ComputeTruePR(P_coords,Q_coords):
         volume_P *= P_coords[1,i] - P_coords[0,i] 
         volume_Q *= Q_coords[1,i] - Q_coords[0,i]
     
-    precision = volume_overlap/volume_P 
-    recall = volume_overlap/volume_Q
+    precision = volume_overlap/volume_Q 
+    recall = volume_overlap/volume_P
     
     return precision, recall
 

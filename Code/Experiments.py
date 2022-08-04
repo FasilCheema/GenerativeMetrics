@@ -13,7 +13,7 @@ def ExperimentQueue():
     Main function to run all experiments
     '''
     #All experiments for reproducibility are intialized with the same random seed of 7
-    fig_num = 72
+    fig_num = 79
 
 
     #All experiments for reproducibility are intialized with the same random seed of 7
@@ -51,8 +51,8 @@ def ExperimentQueue():
     #fig_num = MeasureConvergenceExperiment1(r_seed,num_samples,fig_num,C,C_0, start_val)
     #fig_num = MeasureConvergenceExperiment2(r_seed,num_samples,fig_num,C,C_0, start_val)
     #fig_num = MeasureConvergenceExperiment3(r_seed,num_samples,fig_num,C,C_0, start_val)
-    fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,4)
-    print('finished 4d experiments')
+    #fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,4)
+    #print('finished 4d experiments')
     fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,5)
     print('finished 5d experiments')
     fig_num = MeasureConvergenceExperiment(r_seed,num_samples,fig_num,C,C_0,start_val,6)
@@ -994,7 +994,7 @@ def MeasureConvergenceExperiment3(r_seed, num_samples, fig_num,C,C_0, start_val)
 
 def MeasureConvergenceExperiment(r_seed, num_samples, fig_num,C,C_0, start_val, dimension):
     '''
-    Experiments to compare overlapping uniform distributions: 3 dimensional case and see metrics results vs true coverage
+    Experiments to compare overlapping uniform distributions: d dimensional case and see metrics results vs true coverage
     '''
 
     #Initialize DataGenerator clas with a random seed of our choosing for reproducibility
@@ -1011,7 +1011,7 @@ def MeasureConvergenceExperiment(r_seed, num_samples, fig_num,C,C_0, start_val, 
     
     #How much to move distribution Q by and how many times
     interval = 2
-    num_steps = 10
+    num_steps = 6
     
 
     #initialize arrays for measures
@@ -1051,16 +1051,33 @@ def MeasureConvergenceExperiment(r_seed, num_samples, fig_num,C,C_0, start_val, 
         c_recall_max = c_recall[num_samples-start_val-1]
         precision, recall = ComputePR(P,Q,num_clusters)
 
-        true_precision, true_recall = ComputeTruePR(P, Q)
+        #Initialize empty array for P and Q coordinates
+        P_coords = np.zeros((2,dimension))
+        Q_coords = np.zeros((2,dimension))
 
-        #Plot the data, results and manifold (for pr cover) for the measure values with max number of samples
-        PlotData(P,Q,fig_num,0,0,0,plotstyle='1d', save_fig='on',quick_time='on')
+        #Populate arrays for uniform d-dimensional P and Q coordinates 
+        for l in range(dimension):
+            P_coords[0][l] = init_coord
+            P_coords[1][l] = term_coord
+
+            Q_coords[0][l] = init_coord + i*interval
+            Q_coords[1][l] = term_coord + i*interval
+
+        #Compute true precision and true recall
+        true_precision, true_recall = ComputeTruePR(P_coords, Q_coords)
+        
+        #test case
+        print('true pr is:')
+        print(true_precision)
+        print(true_recall)
+        #
+
+        #Plot the results for the measure values with max number of samples
         PlotResults(precision,recall,I_precision_max,I_recall_max,density_max, coverage_max, c_precision_max, c_recall_max, k, C, fig_num, 0,0,0,save_fig='on',quick_time='on')
-        PlotManifolds(P,Q,P_nQ_pts,P_nQ_knn,Q_nP_pts, Q_nP_knn, PQ_pts, PQ_knn, (k*C),fig_num, plot_pts = True, save_fig = True,quick_time=True)
         
         #Plot precision and recall measures as a function of number of samples 
-        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, 2, start_val, save_fig='on',quick_time='on')
-        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num, 2, start_val, save_fig='on',quick_time='on')
+        PlotPrecisionConvergence(num_samples,true_precision, I_precision, density, c_precision, fig_num, dimension-1, start_val, save_fig='on',quick_time='on')
+        PlotRecallConvergence(num_samples,true_recall, I_recall, coverage, c_recall, fig_num,dimension-1, start_val, save_fig='on',quick_time='on')
         fig_num += 1
 
     return fig_num 
