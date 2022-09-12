@@ -1,5 +1,6 @@
 #from turtle import color
 from random import randint
+from xxlimited import new
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -499,3 +500,24 @@ def PlotManifolds(P,Q,P_disjoint_Q_pts,P_disjoint_Q_knn,Q_disjoint_P_pts, Q_disj
     else:
         print('Dimension Error')
         
+def PlotTruncationFigure():
+    fname = 'GANExperiments/stylegan_truncation.txt'
+    with open(fname) as f:
+        lines = (line for line in f if not line.startswith('#'))
+        data  = np.loadtxt(lines, delimiter=',',skiprows=1)
+        
+    new_data = data[:10,:]
+    truncation = new_data[:,0]
+    IP = new_data[:,1]
+    IR = new_data[:,2]
+    PC = new_data[:,3]
+    RC = new_data[:,4]
+
+    plt.plot(truncation, IP, marker='o', label='IP', color='red')
+    plt.plot(truncation, IR, marker='o', label='IR', color='purple')
+    plt.axis('equal')
+    plt.xlabel('Truncation \u03A8')
+    plt.ylabel('PRC scores')
+    plt.legend()
+    plt.savefig('IPRtruncation.jpg')
+    plt.show()

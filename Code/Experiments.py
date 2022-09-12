@@ -5,8 +5,12 @@ from scipy.sparse import data
 from DataGenerator import DataGenerator
 import numpy as np
 import math
+from time import time
 from GenerativeMetrics import ComputeDC, PRCover,PR_Cover_Indicator,ComputeIPR,ComputePR, IPR_Indicator_Function, ComputeTruePR
 from Plotter import PlotResults, PlotData, PlotManifolds, PlotPrecisionConvergence, PlotRecallConvergence
+from prdc import compute_prdcprc
+from precision_recall import *
+import matplotlib.pyplot as plt
 
 def ExperimentQueue():
     '''
@@ -1082,4 +1086,106 @@ def MeasureConvergenceExperiment(r_seed, num_samples, fig_num,C,C_0, start_val, 
 
     return fig_num 
     
+def VAEExperiment(num_epoch, save_fig=False):
+    k=6
+    k_prc = 2
+    C = 3
+    save_path = "VAEExperiments/Epoch"
 
+    print('VAE Experiment with k value for IPR and DC of {}, PRC has k\' of {}, with a C of {}.'.format(k,k,C))
+    print('MODIFICATION!!!!')
+    real_dist = np.load('test_data.npy')
+    for epoch in range(1,num_epoch+1):
+        f_name = 'generated_images_epoch{:02d}.npy'.format(epoch) 
+        gen_dist = np.load(f_name)
+        num_samples = real_dist.shape[0]
+        dim_x = real_dist.shape[1]
+        dim_y = real_dist.shape[2]
+        #reshape arrays 
+        true_samples = real_dist.reshape((num_samples,dim_x*dim_y))
+        gen_samples = gen_dist.reshape((num_samples,dim_x*dim_y))
+
+        start_time = time()
+        
+        #Compute metrics
+        i_precision, i_recall = ComputeIPR(true_samples,gen_samples,k)
+        density, coverage = ComputeDC(true_samples, gen_samples,k)
+        precision_c, recall_c, _, _, _, _, _, _ = PRCover(true_samples, gen_samples, k_prc, C)
+
+        end_time = time()
+
+        print('The metrics have been computed for epoch: {} with a time of {}'.format(epoch,end_time-start_time))
+        print('Improved precision: {}. Improved Recall: {}'.format(i_precision,i_recall))
+        print('Density: {}. Coverage: {}'.format(density,coverage))
+        print('PC: {}. RC: {}'.format(precision_c,recall_c))
+
+        if save_fig == True:
+            num_images_2_gen = 1000
+            print("Saving samples of real and generated images...")
+            start_time = time()
+            for i in range(num_images_2_gen):
+                gen_image = gen_dist[i,:,:,0]
+                real_image = real_dist[i,:,:,0]
+               
+                fig = plt.figure()
+                plt.imshow(gen_image, cmap='gray')
+                plt.axis('off')
+
+                plt.savefig((save_path+"{:02}/Gen/gen{:04d}.png".format(epoch,i)))
+                plt.close()
+
+                fig = plt.figure()
+                plt.imshow(real_image, cmap='gray')
+                plt.axis('off')
+
+                plt.savefig((save_path+"{:02}/Real/real{:04d}.png".format(epoch,i)))
+                plt.close()
+
+            end_time = time()
+            print("Finished saving first {} images for both distributions.".format(num_images_2_gen))
+            print("It took {} seconds".format((end_time-start_time)))
+def VAEExperiment2(num_epoch):
+    k=9
+    k_prc = 3
+    C = 3
+
+    true_samples = np.load('test_data.npy')
+    for epoch in range(1,num_epoch+1):
+        f_name = 'generated_images_epoch{:02d}.npy'.format(epoch) 
+        gen_samples = np.load(f_name)
+
+        num_samples = true_samples.shape[0]
+        dim_x = true_samples.shape[1]
+        dim_y = true_samples.shape[2]
+        #reshape arrays 
+        real_dist = true_samples.reshape((num_samples,dim_x*dim_y))
+        gen_dist = gen_samples.reshape((num_samples,dim_x*dim_y))
+
+        print(true_samples.shape)
+        print(gen_samples.shape)
+        start_time = time()
+        
+        #Compute metrics
+        #i_precision, i_recall = ComputeIPR(true_samples,gen_samples,k)
+        #density, coverage = ComputeDC(true_samples, gen_samples,k)
+        #precision_c, recall_c, _, _, _, _, _, _ = PRCover(true_samples, gen_samples, k_prc, C)
+        #state = knn_precision_recall_features(true_samples,gen_samples,nhood_sizes=[9],row_batch_size=10000, col_batch_size=100000)
+        state = dict(precision=0,recall=0,precision_cover=0,recall_cover=0)
+        dict_metrics = compute_prdcprc(real_dist,gen_dist, 9)
+
+        end_time = time()
+
+        i_precision = state['precision']
+        i_recall = state['recall']
+        density = dict_metrics['density']
+        coverage = dict_metrics['coverage']
+        precision = dict_metrics['precision']
+        recall = dict_metrics['recall']
+        precision_c = state['precision_cover']
+        recall_c = state['recall_cover']
+
+        print('The metrics have been computed for epoch: {} with a time of {}'.format(epoch,end_time-start_time))
+        print('Improved precision: {}. Improved Recall: {}'.format(i_precision,i_recall))
+        print('Density: {}. Coverage: {}'.format(density,coverage))
+        print('PC: {}. RC: {}'.format(precision_c,recall_c))
+        print('IPR computed via PRDC algorithm is: {} and {} respectively'.format(precision,recall))
